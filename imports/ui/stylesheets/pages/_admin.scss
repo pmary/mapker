@@ -1,0 +1,20 @@
+.admin-layout {
+  .taxons-page {
+    tr {
+      td {
+        &.edition-row {
+          display: none;
+        }
+      }
+    }
+    tr.editing {
+      td {
+        display: none;
+
+        &.edition-row {
+          display: table-cell;
+        }
+      }
+    }
+  }
+}

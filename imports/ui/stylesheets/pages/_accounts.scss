@@ -1,0 +1,335 @@
+/**
+ * 01 - Global
+ * 02 - Sign In form specific
+ * 03 - Sign Up form specific
+ * 04 - Forgot password form specific
+ * 05 - Reset password form specific
+ * 06 - Responsive
+ * 07 - Account activation specific
+ */
+.accounts-layout {
+  /**
+   * 01 - Global
+   */
+  background: linear-gradient(to right, #272d47, #454662);
+  height: 100vh;
+
+  .vcenter {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+    overflow-y: scroll;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    align-self:flex-start;
+
+    form {
+      margin: auto;
+      max-width: 300px;
+
+      h2 {
+        text-align: center;
+        position: relative;
+        width: 100%;
+        display: inline-block;
+        left: 0px;
+      }
+
+      .form-group {
+        text-align: center;
+      }
+    }
+  }
+
+  h2 {
+    color: #fff;
+    font-weight: 100;
+    margin-top: 0px;
+    margin-bottom: 20px;
+  }
+
+  .alert {
+    display: inline-block;
+  }
+
+  .email-input-group {
+    margin-bottom: 0px;
+  }
+
+  img {
+    margin-bottom: 25px;
+  }
+
+  .input-group-addon {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    border-radius: 0px;
+    color: #fff;
+  }
+
+  .on-focus {
+    .input-group-addon {
+      border-bottom: 1px solid $lightUserColor;
+    }
+  }
+
+  .valid {
+    .input-group-addon {
+      color: $lightUserColor;
+    }
+  }
+
+  input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    border-radius: 0px;
+    box-shadow: none;
+    color: #fff;
+
+    &:focus {
+      border: none;
+      border-bottom: 1px solid $lightUserColor;
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  .submit-input-group {
+    margin-top: 10px;
+    width: 100%;
+    .btn {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 15px;
+      width: 100%;
+
+      &.btn-default {
+        border: 2px solid $darkUserColor;
+        color: #fff;
+        background: $lightUserColor;
+      }
+    }
+
+    &.btn-transparent {
+
+    }
+  }
+
+  p {
+    color: #ccc;
+    font-size: 12px;
+    margin: 10px 0 0;
+    text-align: left;
+
+    a {
+      color: #ddd;
+    }
+  }
+
+  .input-group.error {
+    .input-group-addon {
+      border-bottom: 1px solid #fff;
+    }
+
+    &.on-focus {
+      .input-group-addon {
+        border-bottom: 1px solid $errorColor;
+      }
+
+      input {
+        border-color: $errorColor;
+      }
+    }
+  }
+
+  .message {
+    position: relative;
+    margin-top: 0px;
+    display: block;
+
+    @media (min-width: 768px) {
+      top: -15px;
+    }
+
+    &.error {
+      color: $errorColor;
+    }
+  }
+
+  /**
+   * 02 - Sign In form specific
+   */
+  .sign-in-form {
+    @media (min-width: 768px) {
+      .email-input-group {
+        margin-bottom: 15px;
+      }
+    }
+  }
+
+  /**
+   * 03 - Sign Up form specific
+   */
+  .sign-up-form {
+    .btn-transparent {
+      margin-bottom: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .input-group {
+        margin-bottom: 15px;
+      }
+    }
+  }
+
+  /**
+   * 04 - Forgot password form specific
+   */
+  .forgot-password-form {
+    .input-group.email-input-group {
+      margin-bottom: 0px;
+    }
+
+    .btn-transparent {
+      margin-bottom: 15px;
+     }
+
+     @media (min-width: 768px) {
+       .input-group {
+         margin-bottom: 15px;
+       }
+     }
+   }
+
+  /**
+   * 05 - Reset password form specific
+   */
+  .reset-password-form {
+    .submit-input-group {
+      margin-top: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .input-group {
+        margin-bottom: 15px;
+      }
+    }
+  }
+
+  /**
+   * 06 - Responsive
+   */
+  @media (min-width: 768px) {
+    .submit-input-group {
+      margin-top: 25px;
+      width: 100%;
+      .btn {
+        max-width: 228px;
+      }
+    }
+
+    p {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 228px;
+    }
+  }
+
+  /**
+   * 07 - Account activation specific
+   */
+  .activate-account {
+    .vcenter {
+      padding-top: 25px;
+      padding-bottom: 25px;
+    }
+
+    .panel {
+      border: none;
+      border-radius: 3px;
+      box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
+      margin: auto;
+      max-width: 600px;
+
+      .panel-heading {
+        background-color: #fff;
+        border: none;
+
+        h1 {
+          font-size: 31px;
+          font-weight: 300;
+        }
+      }
+
+      .panel-body {
+        .picto-sprite-skill-no-legend {
+          transform: scale(1.3);
+        }
+
+        form {
+          max-width: 100%;
+        }
+
+        h2, h3 {
+          text-align: center;
+        }
+
+        h2 {
+          color: #333;
+        }
+
+        h3 {
+          margin-top: 40px;
+          margin-bottom: 25px;
+          font-weight: 300;
+        }
+
+        .typeahead-container {
+          margin-left: auto;
+          margin-right: auto;
+          max-width: 220px;
+          text-align: left;
+        }
+
+        .input-add-skill {
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          color: #333;
+          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+
+        .checkbox {
+          label {
+            border: 1px solid rgba(59, 190, 166, 0.35);
+            background-color: rgba(31, 222, 194, 0.05);
+            border-radius: 3px;
+            padding: 5px 15px 5px 15px;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+
+            input {
+              margin-left: 0px;
+              position: relative;
+            }
+
+            span {
+              font-weight: 300;
+            }
+          }
+        }
+      }
+    }
+  }
+}

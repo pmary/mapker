@@ -1,0 +1,27 @@
+@import '../imports/ui/stylesheets/main';
+
+body {
+  background-color: #EFEFEF;
+	font-family: 'Montserrat', sans-serif;
+}
+
+/**
+ * Animations
+ */
+.example-appear {
+  opacity: 0.01;
+}
+.example-appear.example-appear-active {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+/**
+ * Form error
+ */
+.input-group.error {
+  .input-group-addon {
+    border-color: $errorColor;
+    color: $errorColor;
+  }
+}

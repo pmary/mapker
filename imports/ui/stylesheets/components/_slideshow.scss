@@ -1,0 +1,146 @@
+.slideshow {
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  position: relative;
+  background-image: url(http://dev.mapker.co/images/home/bg-header-0.jpg);
+  font-family: 'Raleway', sans-serif;
+
+  .slideshow-slides {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+    li {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      margin: 0;
+      padding: 0;
+      transition: .2s;
+      height: 100%;
+      opacity: 0;
+      background-repeat: no-repeat;
+      background-position: 50%;
+      background-size: cover;
+
+      @media (min-height: 550px), (max-width: 700px){
+        figcaption {
+          margin-top: -70px;
+        }
+      }
+
+      &:first-child {
+        figcaption {
+          margin-top: 0px
+        }
+      }
+
+      &.active {
+        opacity: 1;
+        z-index: 1;
+      }
+    }
+  }
+
+  .slideshow-dots {
+    @media (max-height: 550px), (max-width: 700px){
+      background-color: transparent;
+
+      .slider-picto {
+        display: none;
+      }
+    }
+
+    background-color: #fff;
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    list-style: none;
+    z-index: 2;
+
+    li {
+      display: inline;
+      margin: 0;
+      padding: 0;
+
+      &.active a {
+        opacity: 1;
+      }
+
+      a {
+        cursor: pointer;
+        display: inline-block;
+        opacity: 1;
+        transition: .3s;
+
+        @media (max-height: 550px){
+          opacity: .5;
+          width: 10px;
+          height: 10px;
+          margin: 0 5px;
+          background: #fff;
+          border-radius: 10px;
+          text-indent: -9990px;
+        }
+      }
+    }
+  }
+
+  figure {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    line-height: 100vh;
+    text-align: center;
+
+    @media (max-height: 550px){
+      padding-top: 65px;
+    }
+
+    img {
+      height: 100%;
+    }
+
+    figcaption {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: normal;
+      position: relative;
+      font-size: 4rem;
+      font-weight: bold;
+
+      h1 {
+        margin-top: 0px;
+        font-size: 4rem;
+        font-weight: bold;
+      }
+
+      h2 {
+        margin-top: 0px;
+        font-weight: lighter;
+        font-size: 2.6rem;
+        margin-bottom: 3rem;
+      }
+
+      a:last-child {
+        color: #fff;
+        display: block;
+        font-size: 1.5rem;
+        margin-top: 15px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    }
+  }
+}
