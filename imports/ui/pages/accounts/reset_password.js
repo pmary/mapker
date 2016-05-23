@@ -87,6 +87,8 @@ class ResetPassword extends React.Component {
             position: 'top',
             timeout: 5000
           });
+
+          // Redirect to the
         }
       });
     }

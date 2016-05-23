@@ -25,6 +25,13 @@ class TaxonRow extends React.Component {
     event.preventDefault();
     this.setState({editing: false});
   }
+  handleClickActivate(event) {
+    Meteor.call('taxons.activate', this.props.taxon._id, function (err) {
+      if (err) {
+        console.log('taxons.activate: ', err);
+      }
+    })
+  }
   handleEnglishChange(event) { this.setState({english: event.target.value}); }
   handleChineseChange(event) { this.setState({chinese: event.target.value}); }
   handleFrenchChange(event) { this.setState({french: event.target.value}); }
@@ -32,18 +39,21 @@ class TaxonRow extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     // If there is not at least the english label, return
-    if (!this.state.english) { return; }
+    if (!this.props) { return; }
 
     // Call the 'taxons.add' with the different labels
     Meteor.call(
-      'taxons.add',
+      'taxons.update',
+      this.props.taxon._id,
       this.state.english,
       this.state.chinese,
       this.state.french,
       this.state.type,
-      function (err, res) {
+      (err, res) => {
+        // Close the edit form
+        this.setState({editing: false});
+        // Handle the errors
         if (err) { console.log('err: ', err); }
-        else { console.log('res: ', res); }
       }
     );
   }
@@ -81,6 +91,16 @@ class TaxonRow extends React.Component {
           >
             Delete
           </Link>
+          { !this.props.taxon.verified ?
+            <button
+              onClick={this.handleClickActivate.bind(this)}
+              type="button"
+              className="btn btn-success btn-xs"
+            >
+              Activate
+            </button>
+            : null
+          }
         </td>
         <td className="edition-row" colSpan="6">
           <h4>Editing {this.state.english}</h4>
@@ -200,6 +220,10 @@ class AdminTaxons extends React.Component {
       return (<TaxonRow key={taxon._id} taxon={taxon} />)
     });
 
+    unverifiedTaxonsRows = this.props.unverifiedTaxons.map(function (taxon) {
+      return (<TaxonRow key={taxon._id} taxon={taxon} />)
+    });
+
     return (
       <div className="taxons-page">
         <h1>Taxons</h1>
@@ -254,28 +278,45 @@ class AdminTaxons extends React.Component {
           Reset the index
         </button>
 
+        <h2>Unverified Taxons</h2>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>English</th>
+              <th>Chinese</th>
+              <th>French</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unverifiedTaxonsRows}
+          </tbody>
+        </table>
+
         <h2>List</h2>
 
-          <div className="form-group">
-            <label for="exampleInputEmail1">Search</label>
-            <ElasticTypeahead />
-          </div>
+        <div className="form-group">
+          <label for="exampleInputEmail1">Search</label>
+          <ElasticTypeahead />
+        </div>
 
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Id</th>
-                <th>English</th>
-                <th>Chinese</th>
-                <th>French</th>
-                <th>Type</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {taxonRows}
-            </tbody>
-          </table>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>English</th>
+              <th>Chinese</th>
+              <th>French</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {taxonRows}
+          </tbody>
+        </table>
       </div>
     )
   }
@@ -284,7 +325,8 @@ class AdminTaxons extends React.Component {
 // Define the type of the given properties
 AdminTaxons.propTypes = {
   loading: PropTypes.bool,
-  taxons: PropTypes.array.isRequired
+  taxons: PropTypes.array.isRequired,
+  unverifiedTaxons: PropTypes.array.isRequired
 }
 
 /**
@@ -300,7 +342,8 @@ export default createContainer (({ params }) => {
 
   return {
     loading,
-    taxons: Taxons.find({}, {limit: 10}).fetch()
+    taxons: Taxons.find({}, {limit: 10}).fetch(),
+    unverifiedTaxons: Taxons.find({verified: false}).fetch()
   }
 
 }, AdminTaxons);

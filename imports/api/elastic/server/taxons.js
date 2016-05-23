@@ -92,6 +92,51 @@ function createIndex (indexName, body) {
   });
 }
 
+/**
+ * @description
+ *
+ * @param {Object} taxons - An array of taxons from the Taxons MongoDB
+ * @return The result of the ES bulk query
+ */
+function bulkIndex (taxons) {
+  return new Promise(function (resolve, reject) {
+    var bulkArray = [];
+    taxons.map(function (doc) {
+      // Format the data
+      bulkArray.push({
+        index: {
+          _index: _indexName,
+          _type: doc.type,
+          _id: doc._id
+        }
+      });
+      bulkArray.push({
+        name: doc.name,
+        name_fr: doc.i18n.fr.name,
+        name_zh: doc.i18n.zh.name,
+        skill_suggest: { input: [doc.name], payload: { _id: doc._id } }
+      });
+    });
+
+    Elastic.bulk({body: bulkArray}, function (err, res) {
+      if (err) { console.log('Err: ',err); reject(err); }
+      else { console.log('All right'); ;resolve(true); }
+    })
+  });
+}
+
+/**
+ * @description
+ * Used by the collection hooks to update or insert a document after its
+ * creation or modification in the collection
+ */
+function indexDoc (userId, doc, fieldNames, modifier, options) {
+  // If the taxon is verified
+  if (doc.verified === true) {
+    return bulkIndex([doc]);
+  }
+}
+
 Meteor.methods({
   /**
    * @description
@@ -118,29 +163,8 @@ Meteor.methods({
         }, 2000);
       });
     })
-    .then(function (res) {
-      var taxons = [];
-
-      Taxons.find({}).map(function (doc) {
-        // Format the data
-        taxons.push({
-          index: {
-            _index: _indexName,
-            _type: doc.type,
-            _id: doc._id
-          }
-        });
-        taxons.push({
-          name: doc.name,
-          name_fr: doc.i18n.fr.name,
-          name_zh: doc.i18n.zh.name,
-          skill_suggest: { input: [doc.name], payload: { _id: doc._id } }
-        });
-
-        return doc;
-      });
-
-      return Elastic.bulk({body: taxons});
+    .then(function () {
+      return bulkIndex(Taxons.find({}));
     });
   },
   /**
@@ -184,3 +208,6 @@ Meteor.methods({
     });
   }
 });
+
+Taxons.after.update(indexDoc);
+Taxons.after.insert(indexDoc);

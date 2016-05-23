@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Taxons } from '../taxons.js';
 
 var skills = [
-  "Label",
   ".NET",
   "A++",
   "AAUS Scientific Diver",
@@ -1208,6 +1207,7 @@ Meteor.startup(function () {
     for (let i = 0; i < skills.length; i++) {
       let skill = skills[i];
       Taxons.insert({
+        verified: true,
         name: skill,
         type: 'skill',
         i18n: {

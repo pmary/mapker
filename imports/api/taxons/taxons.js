@@ -38,9 +38,36 @@ Taxons.schema = new SimpleSchema({
     type: String,
     optional: true
   },
+  verified: {
+    type: Boolean
+  },
   name: {
     type: String,
     unique: true
+  },
+  canonicalName: {
+    type: String,
+    unique: true,
+    autoValue: function() {
+      var name = this.field("name");
+      if (name.isSet) {
+        return name.value.toLowerCase();
+      } else {
+        this.unset();  // Prevent user from supplying their own value
+      }
+    }
+  },
+  submitedBy: {
+    type: String,
+    optional: true,
+    autoValue: function() {
+      var userId = Meteor.userId();
+      if (userId) {
+        return userId;
+      } else {
+        this.unset();  // Prevent user from supplying their own value
+      }
+    }
   },
   type: {
     type: String,
@@ -66,6 +93,30 @@ Taxons.schema = new SimpleSchema({
   },
   'i18n.fr.name': {
     type: String,
+    optional: true
+  },
+  createdAt: {
+    type: Date,
+    autoValue: function() {
+      if (this.isInsert) {
+        return new Date();
+      } else if (this.isUpsert) {
+        return {$setOnInsert: new Date()};
+      } else {
+        this.unset();  // Prevent user from supplying their own value
+      }
+    }
+  },
+  // Force value to be current date (on server) upon update
+  // and don't allow it to be set upon insert.
+  updatedAt: {
+    type: Date,
+    autoValue: function() {
+      if (this.isUpdate) {
+        return new Date();
+      }
+    },
+    denyInsert: true,
     optional: true
   }
 });
