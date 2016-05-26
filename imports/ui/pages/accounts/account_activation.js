@@ -5,7 +5,8 @@ import Alert from 'react-s-alert';
 import Modal from '/imports/ui/components/modal.js';
 import ElasticTypeahead from '/imports/ui/components/elastic/typeahead.js';
 import TaxonTag from '/imports/ui/components/taxon_tag.js';
-import LocationForm from '/imports/ui/components/location_form.js';
+import Geocoder from '/imports/ui/components/geocoder.js';
+import MapComponent from '/imports/ui/components/map.js';
 
 class AccountActivation extends React.Component {
   constructor(props) {
@@ -14,6 +15,8 @@ class AccountActivation extends React.Component {
     this.state = {
       professionalHeadline: '',
       location: '',
+      place: null, // A location returned by the geocoder
+      lastSuggestedPlace: null,
       coordinate: {}
     };
 
@@ -122,7 +125,7 @@ class AccountActivation extends React.Component {
         this.setState({coordinate: coordinate});
 
         // Open the location confirmation component in a modal
-        this.refs.locationConfirmModal.show();
+        //this.refs.locationConfirmModal.show();
       });
     }
     else {
@@ -165,15 +168,69 @@ class AccountActivation extends React.Component {
    */
   selectLocation(label, coordinate) {
     this.setState({location: label});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(label);
   }
-
   changeLocation(label) {
     this.setState({location: label});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(label);
   }
 
+  /**
+   * Geocoder handler functions
+   */
+  // Handle the new input value
+  geocoderChange(label) {
+    this.setState({location: label, place: null});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(label);
+  }
+  // Handle the selected place object
+  geocoderSelect(place) {
+    this.setState({location: place.place_name, place: place});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(place.place_name);
+  }
+  // Handle the suggestion list
+  geocoderSuggest(suggests) {
+    this.setState({lastSuggestedPlace: suggests[0]});
+  }
+
+  /**
+   * MapComponent callback functions
+   */
+  // Called by the MapComponent when a revese geocoding request is a success
+  mapReverseGeocoding(place) {
+    // Pass the place to the geocoder param
+    this.refs.modalGeocoder.updateInputValue(place.place_name);
+  }
+
+  /**
+   * Test purpose, to remove
+   */
   showModal() {
-    console.log('Enter in showModal');
     this.refs.locationConfirmModal.show();
+
+    // Re-render the map to be sur that it will fit to the modal size
+    setTimeout( () => {
+      this.refs.mapComponent.invalidateSize();
+      this.refs.mapComponent.disableZoom();
+
+      // If there is no selected place
+      if (this.state.place) {
+        // Pass the coordinates to the map component
+        this.refs.mapComponent.onSelect(this.state.place);
+      }
+      // If there is a location text and a place object
+      else if (
+        this.state.location &&
+        this.state.lastSuggestedPlace
+      ) {
+        // Pass the coordinates to the map component
+        this.refs.mapComponent.onSelect(this.state.lastSuggestedPlace);
+      }
+    }, 300);
   }
 
   render() {
@@ -213,6 +270,7 @@ class AccountActivation extends React.Component {
                 <button className="btn" onClick={this.showModal.bind(this)}>
                   Show modal
                 </button>
+
                 <span className="picto-sprite-skill-no-legend"></span>
 
                 <form onSubmit={function (e) { e.preventDefault(); }}>
@@ -249,12 +307,23 @@ class AccountActivation extends React.Component {
                   <h2>Where are you located?</h2>
 
                   <div className="form-group">
-                    <LocationForm
-                      className="input-address"
-                      placeholder="Ex: 42, Broadway, Sleepy Hollow, New York"
-                      ref="locationInputComponent"
-                      onSelectSuggest={this.selectLocation.bind(this)}
-                      onChange={this.changeLocation.bind(this)}
+                    <Geocoder
+                      ref="activationGeocoder"
+                      inputPlaceholder="Ex: 42, Broadway, Sleepy Hollow, New York"
+                      accessToken="pk.eyJ1Ijoic2hlY2twYXIiLCJhIjoiMTNzTlE1OCJ9.wY4R3ybKOIbLiBEjQMXBpw"
+                      onSelect={this.geocoderSelect.bind(this)}
+                      onSuggest={this.geocoderSuggest.bind(this)}
+                      onChange={this.geocoderChange.bind(this)}
+                      source="mapbox.places"
+                      inputClass="input-address form-control"
+                      inputPlaceholder="Search"
+                      resultClass="placesSuggest_suggest"
+                      resultsClass="placesSuggest_suggests"
+                      resultFocusClass="placesSuggest_suggest-active"
+                      showLoader={true}
+                      inputPosition="top"
+                      proximity=""
+                      focusOnMount={true}
                     />
                     <p><i>
                       Only your address cordinate, country and city will be
@@ -308,12 +377,39 @@ class AccountActivation extends React.Component {
               </div>
             </div>
           </div>
+          <Modal
+            className="confirm-location-modal"
+            id="location-confirm-modal"
+            btnConfirmText="Confirm"
+            btnCancelText="Cancel"
+            ref="locationConfirmModal"
+            title="Confirm your address"
+          >
+            <MapComponent
+              ref="mapComponent"
+              accessToken="pk.eyJ1Ijoic2hlY2twYXIiLCJhIjoiMTNzTlE1OCJ9.wY4R3ybKOIbLiBEjQMXBpw"
+              mapId="mapbox.run-bike-hike"
+              source="mapbox.places"
+              onReverseGeocoding={this.mapReverseGeocoding.bind(this)}
+            />
+            <Geocoder
+              ref="modalGeocoder"
+              accessToken="pk.eyJ1Ijoic2hlY2twYXIiLCJhIjoiMTNzTlE1OCJ9.wY4R3ybKOIbLiBEjQMXBpw"
+              onSelect={this.geocoderSelect.bind(this)}
+              onSuggest={this.geocoderSuggest.bind(this)}
+              source="mapbox.places"
+              inputClass=""
+              inputPlaceholder="Search"
+              resultClass="placesSuggest_suggest"
+              resultsClass="placesSuggest_suggests"
+              resultFocusClass="placesSuggest_suggest-active"
+              showLoader={true}
+              inputPosition="top"
+              proximity=""
+              focusOnMount={true}
+            />
+          </Modal>
         </div>
-        <Modal
-          id="location-confirm-modal"
-          ref="locationConfirmModal"
-          title="Hello modal"
-        />
       </div>
     )
   }

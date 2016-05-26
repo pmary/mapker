@@ -6,6 +6,7 @@
  * 05 - Reset password form specific
  * 06 - Responsive
  * 07 - Account activation specific
+ * 08 - Location confirmation modal
  */
 .accounts-layout {
   /**
@@ -306,14 +307,14 @@
 
         .professional-headline-container,
         .typeahead-container,
-        .address-autocomplete-container {
+        .geocoder-container {
           margin-left: auto;
           margin-right: auto;
           max-width: 220px;
           text-align: left;
         }
 
-        .address-autocomplete-container {
+        .geocoder-container {
           max-width: 320px;
         }
 
@@ -345,6 +346,38 @@
             span {
               font-weight: 300;
             }
+          }
+        }
+      }
+    }
+
+    /**
+     * 08 - Location confirmation modal
+     */
+    .confirm-location-modal {
+      .modal-body {
+        padding: 0px;
+        min-height: 200px;
+        min-height: 350px;
+
+        .map-container {
+          height: 350px;
+        }
+
+        .geocoder-container {
+          top: 20px;
+          position: absolute;
+          width: 50%;
+          left: 25%;
+          max-width: none;
+
+          input {
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: #333333;
+            padding: 6px 10px 6px 10px;
+            transition: border-color .05s;
+            width: 100%;
           }
         }
       }

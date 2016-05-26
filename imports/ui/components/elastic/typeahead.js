@@ -224,6 +224,7 @@ class ElasticTypeahead extends React.Component {
 						onKeyDown={this.handleKeyDown.bind(this)}
 						onFocus={this.handleFocus.bind(this)}
 						required={this.props.required}
+						autocomplete="off"
 	        />
 					<div
 						className={

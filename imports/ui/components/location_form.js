@@ -179,6 +179,7 @@ class LocationForm extends React.Component {
             placeholder={this.props.placeholder}
             value={this.state.search}
             onChange={this.onChangeHandler.bind(this)}
+            autocomplete="off"
           />
           <div className="placesSuggest">
             { this.props.children }

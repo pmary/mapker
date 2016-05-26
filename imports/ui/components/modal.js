@@ -14,6 +14,10 @@ class ModalComponent extends React.Component {
   }
 
   render() {
+    var childrens = this.props.children.map(function (child) {
+      return (child);
+    });
+
     return (
       <div
         className={this.props.className + " modal fade" }
@@ -35,10 +39,31 @@ class ModalComponent extends React.Component {
               <h4 className="modal-title">{this.props.title}</h4>
             </div>
             <div className="modal-body">
-              {this.props.body}
+              { childrens }
             </div>
             <div className="modal-footer">
-              {this.props.footer}
+              <div className="pull-right">
+                <button type="button" className="btn btn-primary">
+                  {
+                    this.props.btnConfirmText ?
+                      this.props.btnConfirmText :
+                      'Confirm'
+                  }
+                </button>
+              </div>
+              <div className="pull-left">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  data-dismiss="modal"
+                >
+                  {
+                    this.props.btnCancelText ?
+                      this.props.btnCancelText :
+                      'Cancel'
+                  }
+                </button>
+              </div>
             </div>
           </div>
         </div>
