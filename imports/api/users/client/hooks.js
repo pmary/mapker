@@ -6,8 +6,9 @@ import { browserHistory, Link } from 'react-router';
  */
 Accounts.onLogin(function (parameters) {
   var user = Meteor.user();
+  console.log('onLogin');
   // Check if the user has activated his profile
-  if (!user.profile.skills) {
+  if (!user.profile.activated) {
     // Redirect him to the account activation page
     browserHistory.push('/activate-account');
   }

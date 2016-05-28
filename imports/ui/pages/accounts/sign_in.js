@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import Alert from 'react-s-alert';
 import '/imports/api/users/users.js';
 
@@ -15,6 +15,14 @@ class SignIn extends React.Component {
       email: { value: '', isValid: false, hasError: false, onFocus: false },
       password: { value: '', isValid: false, hasError: false, onFocus: false }
     };
+  }
+  componentWillMount() {
+    var user = Meteor.user();
+    // If there is a user
+    if (user) {
+      // Redirect the user to his profile
+      browserHistory.push('/users/' + user.profile.username);
+    }
   }
   onFocus(event) {
     $(event.currentTarget).parent().addClass('on-focus');
@@ -70,7 +78,9 @@ class SignIn extends React.Component {
           });
         }
         else {
-          console.log('Res: ', res);
+          var user = Meteor.user();
+          // Redirect the user to his profile
+          browserHistory.push('/users/' + user.profile.username);
         }
       });
     }

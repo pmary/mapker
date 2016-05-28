@@ -17,7 +17,8 @@ class AccountActivation extends React.Component {
       location: '',
       place: null, // A location returned by the geocoder
       lastSuggestedPlace: null,
-      coordinate: {}
+      coordinate: {},
+      confirmedPlace: null // The confirmed place object
     };
 
     if (props.routeParams.token) {
@@ -34,12 +35,16 @@ class AccountActivation extends React.Component {
     this.state = {skills: {}, skillsIds: [], skillInput: ''};
   }
 
+  componentDidMount() {
+    // Set focus on the headline input
+    this.refs.professionalHeadline.focus();
+  }
+
   handleprofessionalHeadlineChange (e) {
     this.setState({professionalHeadline: e.target.value});
   }
 
   handleSkillChange(label) {
-    console.log('handleSkillChange label: ', label);
     this.setState({skillInput: label});
   }
   handleSkillSelect(suggestion) {
@@ -66,8 +71,6 @@ class AccountActivation extends React.Component {
    * Add a custom skill to the user profile
    */
   handleSkillSubmit(e) {
-    console.log('Enter in handleSkillSubmit: ', e.target.value);
-
     // Check if the skill is not already selected
     var keys = Object.keys(this.state.skills);
     for (var i = 0; i < keys.length; i++) {
@@ -86,12 +89,13 @@ class AccountActivation extends React.Component {
    * Validate the form and activate the user account
    */
   handleConfirmActivation() {
+    console.log('Enter in handleConfirmActivation');
+    // Hide the location confirmation modal by default
+    this.refs.locationConfirmModal.hide();
+
     // Set the submit btn state to loading
     var target = $('.btn-submit');
     target.button('loading');
-
-    // To remove
-    target.button('reset');
 
     // Check if the user has an professional headline
     if (!this.state.professionalHeadline) {
@@ -101,6 +105,9 @@ class AccountActivation extends React.Component {
         effect: 'jelly'
       });
       target.button('reset');
+
+      // Focus on the input
+      this.refs.professionalHeadline.focus();
       return;
     }
 
@@ -112,27 +119,30 @@ class AccountActivation extends React.Component {
         effect: 'jelly'
       });
       target.button('reset');
+
+      // Focus on the input
+      this.refs.accountActivationSkillInput.focusInput();
       return;
     }
 
     // Check if there is a location value
     if (this.state.location) {
-      // Geocode it
-      this.refs.locationInputComponent.geocodeSuggest(this.state.location, (label, coordinate) => {
-        console.log('label:', label);
-        console.log('coordinate:', coordinate);
-        this.setState({location: label});
-        this.setState({coordinate: coordinate});
-
-        // Open the location confirmation component in a modal
-        //this.refs.locationConfirmModal.show();
-      });
+      // If the place hasn't been confirmed
+      if (!this.state.confirmedPlace) {
+        console.log('No confirmedPlace');
+        // Open the location confirmation modal
+        this.openLocationConfirmationModal();
+        return;
+      }
     }
     else {
       Alert.warning('You must set a location', {
         position: 'top-right',
         effect: 'jelly'
       });
+      // Focus on the input
+      this.refs.activationGeocoder.setInputFocus();
+      return;
     }
 
     // Get the ids of the selected skills
@@ -151,15 +161,17 @@ class AccountActivation extends React.Component {
       }
     }
 
+    console.log('Let\'s save the data');
+
     // Update the user profile with his new skills
-    /*Meteor.call(
-      'users.skills.add',
+    Meteor.call(
+      'users.profile.activate',
       skillsIds,
       customSkills, function (err, res) {
         target.button('reset');
         if (err) { console.log(err); }
         else { console.log(res); }
-    });*/
+    });
 
   }
 
@@ -182,15 +194,23 @@ class AccountActivation extends React.Component {
    */
   // Handle the new input value
   geocoderChange(label) {
-    this.setState({location: label, place: null});
+    this.setState({location: label, place: null, confirmedPlace: null});
     // Update the geocoder component input value
     this.refs.modalGeocoder.updateInputValue(label);
   }
-  // Handle the selected place object
+  // Handle the selected place object from the activation geocoder
   geocoderSelect(place) {
-    this.setState({location: place.place_name, place: place});
+    this.setState({location: place.place_name, place: place, confirmedPlace: null});
     // Update the geocoder component input value
     this.refs.modalGeocoder.updateInputValue(place.place_name);
+  }
+  // Handle the selected place object from the modal geocoder
+  modalGeocoderSelect(place) {
+    this.setState({location: place.place_name, place: place, confirmedPlace: place});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(place.place_name);
+    // Pass the coordinates to the map component
+    this.refs.mapComponent.onSelect(place);
   }
   // Handle the suggestion list
   geocoderSuggest(suggests) {
@@ -202,14 +222,30 @@ class AccountActivation extends React.Component {
    */
   // Called by the MapComponent when a revese geocoding request is a success
   mapReverseGeocoding(place) {
+    console.log('Enter in mapReverseGeocoding');
     // Pass the place to the geocoder param
     this.refs.modalGeocoder.updateInputValue(place.place_name);
+    // Set the confirmedPlace
+    this.setState({confirmedPlace: place});
   }
 
   /**
-   * Test purpose, to remove
+   * Modal component callback functions
    */
-  showModal() {
+  modalOnConfirm() {
+    // Check if there is a confirmed location
+    if (this.state.confirmedPlace) {
+      this.handleConfirmActivation();
+    }
+    else {
+      Alert.warning('You must select a place', {
+        position: 'top-right',
+        effect: 'jelly'
+      });
+    }
+  }
+
+  openLocationConfirmationModal() {
     this.refs.locationConfirmModal.show();
 
     // Re-render the map to be sur that it will fit to the modal size
@@ -221,6 +257,7 @@ class AccountActivation extends React.Component {
       if (this.state.place) {
         // Pass the coordinates to the map component
         this.refs.mapComponent.onSelect(this.state.place);
+        this.setState({confirmedPlace: this.state.place});
       }
       // If there is a location text and a place object
       else if (
@@ -229,7 +266,11 @@ class AccountActivation extends React.Component {
       ) {
         // Pass the coordinates to the map component
         this.refs.mapComponent.onSelect(this.state.lastSuggestedPlace);
+        this.setState({confirmedPlace: this.state.lastSuggestedPlace});
       }
+
+      // Set focus to the input
+      this.refs.modalGeocoder.setInputFocus();
     }, 300);
   }
 
@@ -265,12 +306,7 @@ class AccountActivation extends React.Component {
                 <h1>Activate your account</h1>
               </div>
 
-              <div className="panel-body"
-              >
-                <button className="btn" onClick={this.showModal.bind(this)}>
-                  Show modal
-                </button>
-
+              <div className="panel-body">
                 <span className="picto-sprite-skill-no-legend"></span>
 
                 <form onSubmit={function (e) { e.preventDefault(); }}>
@@ -278,6 +314,7 @@ class AccountActivation extends React.Component {
 
                   <div className="form-group professional-headline-container">
                     <input
+                      ref="professionalHeadline"
                       type="text"
                       className="form-control input-professional-headline"
                       placeholder="Ex: Fab Manager"
@@ -296,7 +333,7 @@ class AccountActivation extends React.Component {
                       onSelect={this.handleSkillSelect.bind(this)}
                       onSubmit={this.handleSkillSubmit.bind(this)}
                       placeholder="Ex: Wood Working, Yoga..."
-                      refKey="accountActivationSkillInput"
+                      ref="accountActivationSkillInput"
                       required={false}
                     />
                     <i>You must choose at least 3 skills</i>
@@ -316,14 +353,14 @@ class AccountActivation extends React.Component {
                       onChange={this.geocoderChange.bind(this)}
                       source="mapbox.places"
                       inputClass="input-address form-control"
-                      inputPlaceholder="Search"
+                      inputPlaceholder="Ex: 42, Broadway, Sleepy Hollow, New York"
                       resultClass="placesSuggest_suggest"
                       resultsClass="placesSuggest_suggests"
                       resultFocusClass="placesSuggest_suggest-active"
                       showLoader={true}
                       inputPosition="top"
                       proximity=""
-                      focusOnMount={true}
+                      focusOnMount={false}
                     />
                     <p><i>
                       Only your address cordinate, country and city will be
@@ -382,6 +419,7 @@ class AccountActivation extends React.Component {
             id="location-confirm-modal"
             btnConfirmText="Confirm"
             btnCancelText="Cancel"
+            onConfirm={this.modalOnConfirm.bind(this)}
             ref="locationConfirmModal"
             title="Confirm your address"
           >
@@ -395,18 +433,18 @@ class AccountActivation extends React.Component {
             <Geocoder
               ref="modalGeocoder"
               accessToken="pk.eyJ1Ijoic2hlY2twYXIiLCJhIjoiMTNzTlE1OCJ9.wY4R3ybKOIbLiBEjQMXBpw"
-              onSelect={this.geocoderSelect.bind(this)}
+              onSelect={this.modalGeocoderSelect.bind(this)}
               onSuggest={this.geocoderSuggest.bind(this)}
               source="mapbox.places"
               inputClass=""
-              inputPlaceholder="Search"
+              inputPlaceholder="Ex: 42, Broadway, Sleepy Hollow, New York"
               resultClass="placesSuggest_suggest"
               resultsClass="placesSuggest_suggests"
               resultFocusClass="placesSuggest_suggest-active"
               showLoader={true}
               inputPosition="top"
               proximity=""
-              focusOnMount={true}
+              focusOnMount={false}
             />
           </Modal>
         </div>

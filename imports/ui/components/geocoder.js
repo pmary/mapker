@@ -32,9 +32,10 @@ function search(endpoint, source, accessToken, proximity, query, callback) {
      }
    }
    componentDidMount() {
-     console.log('Geocoder mount');
      if (this.props.focusOnMount) this.refs.input.focus();
-
+   }
+   setInputFocus() {
+     this.refs.input.focus()
    }
    componentWillMount() {
      document.addEventListener('click', this.handleClick.bind(this), false);

@@ -17,12 +17,16 @@ import { AdminLayout } from '/imports/ui/layouts/admin.js';
 import AdminHome from '/imports/ui/pages/admin/home.js';
 import AdminTaxons from '/imports/ui/pages/admin/taxons.js';
 
+// Profile
+import Profile from '/imports/ui/pages/profiles/profile.js';
+
 Meteor.startup( () => {
   render(
     <Router history={ browserHistory }>
       <Route path="/" component={ App } >
         <IndexRoute component={ Home } />
         <Route path="/?signed-up" component={ Home } />
+        <Route path="/users/:username" component={ Profile } />
       </Route>
       <Route path="/" component={ AccountsLayout } >
         <Route path="/sign-in" component={ SignIn } />

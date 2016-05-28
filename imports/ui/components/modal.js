@@ -13,6 +13,13 @@ class ModalComponent extends React.Component {
     $('#'+this.props.id).modal('hide');
   }
 
+  onConfirm() {
+    // If there is a callback function
+    if (this.props.onConfirm) {
+      this.props.onConfirm();
+    }
+  }
+
   render() {
     var childrens = this.props.children.map(function (child) {
       return (child);
@@ -43,7 +50,11 @@ class ModalComponent extends React.Component {
             </div>
             <div className="modal-footer">
               <div className="pull-right">
-                <button type="button" className="btn btn-primary">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.onConfirm.bind(this)}
+                >
                   {
                     this.props.btnConfirmText ?
                       this.props.btnConfirmText :

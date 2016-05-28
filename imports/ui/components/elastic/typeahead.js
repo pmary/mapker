@@ -72,7 +72,7 @@ class ElasticTypeahead extends React.Component {
 					}
 				}
       });
-    }, 200);
+    }, 100);
   }
 	// If there is a click outside of the component, hide the suggestions list
 	handleClick(e) {
@@ -192,6 +192,11 @@ class ElasticTypeahead extends React.Component {
     this.setState({ focusedSuggestIndex: index })
   }
 
+	// Set the focus to the input
+	focusInput() {
+		this.refs.input.focus();
+	}
+
   render() {
 		var suggestions = null;
 		if (this.state.suggestions) {
@@ -217,6 +222,7 @@ class ElasticTypeahead extends React.Component {
 				>
 	        <input
 	          type="text"
+						ref="input"
 	          className={this.props.className + ' form-control typeahead-input'}
 	          placeholder={this.props.placeholder}
 	          value={this.state.taxon}

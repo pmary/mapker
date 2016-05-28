@@ -65,7 +65,7 @@ class MapComponent extends React.Component {
 
   onSelect(res) {
     layerGroup.clearLayers();
-    
+
     var marker = L.marker(new L.LatLng(
       res.geometry.coordinates[1],
       res.geometry.coordinates[0]
@@ -75,6 +75,11 @@ class MapComponent extends React.Component {
       }),
       draggable: true
     });
+    var popupContent = "Drag me to adjust the location";
+    marker.bindPopup(popupContent,{
+        closeButton: false,
+    });
+
     marker.on('dragend', (e) => {
       var marker = e.target;
       var position = marker.getLatLng();
@@ -90,6 +95,7 @@ class MapComponent extends React.Component {
         this.onResult.bind(this)
       );
     });
+
     marker.addTo(layerGroup);
 
     var markerSymbol = res.properties.category &&
@@ -130,7 +136,10 @@ class MapComponent extends React.Component {
     var feature = L.mapbox.featureLayer(geojson);
     map.fitBounds(feature.getBounds(), { maxZoom: max });
     setTimeout(function () {
-      //feature.addTo(layerGroup);
+      marker.openPopup();
+      setTimeout(function () {
+        marker.closePopup();
+      }, 5000);
     }, 150);
 
     if (debug) {
