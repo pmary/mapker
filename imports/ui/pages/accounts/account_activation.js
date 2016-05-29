@@ -70,18 +70,18 @@ class AccountActivation extends React.Component {
   /**
    * Add a custom skill to the user profile
    */
-  handleSkillSubmit(e) {
+  handleSkillSubmit(value) {
     // Check if the skill is not already selected
     var keys = Object.keys(this.state.skills);
     for (var i = 0; i < keys.length; i++) {
       let skill = this.state.skills[keys[i]].toLowerCase();
-      if (skill == e.target.value.toLowerCase()) {
+      if (skill == value.toLowerCase()) {
         return;
       }
     }
 
     // Add the custom skill to the skills array, used to display the taxons tags
-    this.state.skills['custom-' + e.target.value] = e.target.value;
+    this.state.skills['custom-' + value] = value;
     this.setState({ skills: this.state.skills });
   }
 
@@ -161,16 +161,21 @@ class AccountActivation extends React.Component {
       }
     }
 
-    console.log('Let\'s save the data');
-
     // Update the user profile with his new skills
     Meteor.call(
       'users.profile.activate',
+      this.state.professionalHeadline,
       skillsIds,
-      customSkills, function (err, res) {
+      customSkills,
+      this.state.confirmedPlace,
+      function (err, res) {
         target.button('reset');
         if (err) { console.log(err); }
-        else { console.log(res); }
+        else {
+          let user = Meteor.user();
+          // Redirect the user to his profile page
+          browserHistory.push('/users/' + user.profile.username);
+        }
     });
 
   }

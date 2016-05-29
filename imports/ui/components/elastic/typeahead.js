@@ -39,7 +39,11 @@ class Suggestion extends React.Component {
 class ElasticTypeahead extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {taxon: '', suggestionsVisible: false, focusedSuggestIndex: 0};
+    this.state = {
+			taxon: '',
+			suggestionsVisible: false,
+			focusedSuggestIndex: null
+		};
     this.handleTaxonChangeDebounced = debounce( (query) => {
 			// Suggeset query against the ES index
       Meteor.call('elastic.taxon.search', query, (err, res) => {
@@ -145,45 +149,64 @@ class ElasticTypeahead extends React.Component {
   handleChange(e) {
 		this.handleTaxonChange(e.target.value);
   }
+	moveFocus(dir) {
+		this.setState({
+			focusedSuggestIndex: this.state.focusedSuggestIndex === null ?
+				0 : Math.max(0,
+					Math.min(
+						this.state.suggestions.length - 1,
+						this.state.focusedSuggestIndex + dir))
+		});
+	}
 	handleKeyDown(e) {
 		e.persist();
 
 		switch (e.key) {
       case 'Enter':
-				if (this.props.onSubmit) {
-					// If a taxon has been typed
-					if (this.state.taxon) {
+				console.log('Press Enter');
+				console.log('focusedSuggestIndex: ', this.state.focusedSuggestIndex);
+				if(this.state.taxon && this.state.focusedSuggestIndex == null) {
+					if (this.props.onSubmit) {
 						// Send the submited value to the callback
-						this.props.onSubmit(e);
+						this.props.onSubmit(e.target.value);
 
 						// Clear the search and the suggestions
 						this.setState({
 							taxon: '',
 							suggestionsVisible: false,
-							suggestions: []
+							suggestions: [],
+							focusedSuggestIndex: null
+						});
+					}
+				}
+				else if (this.state.suggestions.length) {
+					console.log('In else');
+					console.log('this.state.suggestions: ', this.state.suggestions);
+					console.log('this.state.focusedSuggestIndex: ', this.state.focusedSuggestIndex);
+					if (this.props.onSelect) {
+						// Send the submited value to the callback
+						let suggest = this.state.suggestions[this.state.focusedSuggestIndex];
+						this.props.onSelect(suggest);
+
+						// Clear the search and the suggestions
+						this.setState({
+							taxon: '',
+							suggestionsVisible: false,
+							suggestions: [],
+							focusedSuggestIndex: null
 						});
 					}
 				}
 				break
 
 			case 'ArrowUp':
-				if (
-					this.state.suggestions.length &&
-					this.state.focusedSuggestIndex > 0
-				) {
-					this.focusSuggest(this.state.focusedSuggestIndex - 1)
-				}
 				e.preventDefault();
+				this.moveFocus(-1);
 				break
 
 			case 'ArrowDown':
-				if (
-					this.state.suggestions.length > 0 &&
-					this.state.focusedSuggestIndex < this.state.suggestions.length - 1
-				) {
-					this.focusSuggest(this.state.focusedSuggestIndex + 1)
-				}
 				e.preventDefault();
+				this.moveFocus(1);
 				break
 		}
 	}

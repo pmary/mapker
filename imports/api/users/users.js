@@ -11,6 +11,24 @@ if (Meteor.isServer) {
 Schema = {};
 
 Schema.userProfile = new SimpleSchema({
+  activated: {
+    type: Boolean,
+    autoValue: function() {
+      if (this.isInsert) {
+        val = false;
+        return val;
+      } else if (
+        this.isFromTrustedCode &&
+        this.field('activated').isSet &&
+        (this.isUpsert || this.isUpdate)
+      ) {
+        var val = this.field('activated');
+        return val;
+      } else {
+        this.unset();  // Prevent user from supplying their own value
+      }
+    }
+  },
   firstname: {
     type: String,
     min: 2,
@@ -39,6 +57,52 @@ Schema.userProfile = new SimpleSchema({
     regEx: /^[a-z0-9A-Z_]{3,15}$/,
     unique: true,
     max: 15
+  },
+  headline: {
+    type: String,
+    optional: true
+  },
+  skills: {
+    type: Array,
+    optional: true
+  },
+  "skills.$": {
+    type: String
+  },
+  "location": {
+    type: Object,
+    optional: true
+  },
+  "location.country": {
+    type: String
+  },
+  "location.countryCode": {
+    type: String,
+    max: 2,
+    optional: true
+  },
+  "location.postcode": {
+    type: String
+  },
+  "location.region": {
+    type: String
+  },
+  "location.coordinate": {
+    type: Object
+  },
+  "location.coordinate.lat": {
+    type: String
+  },
+  "location.coordinate.lon": {
+    type: String
+  },
+  "location.bbox": {
+    type: Array,
+    optional: true
+  },
+  "location.bbox.$": {
+    type: Number,
+    decimal: true
   }
 });
 
@@ -58,7 +122,8 @@ Schema.User = new SimpleSchema({
     type: Boolean
   },
   createdAt: {
-    type: Date
+    type: Date,
+    optional: true
   },
   profile: {
     type: Schema.userProfile,
