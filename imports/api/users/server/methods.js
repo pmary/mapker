@@ -32,10 +32,10 @@ Meteor.methods({
     // Insert the skills
     Meteor.call('users.skills.add', skillsIds, customSkills);
 
-    // Insert the headline
+    // Insert the headline and activate the account
     Meteor.users.upsert(userId, { $set: {
       'profile.headline': healine,
-      activated: true
+      'profile.activated': true
     } });
   },
   /**
@@ -49,7 +49,7 @@ Meteor.methods({
     check(place, Object);
 
     var userId = Meteor.userId(); if (!userId) { return; }
-    var postcode;
+    var postcode = '';
     var country;
     var countryCode;
     var region;
@@ -79,7 +79,19 @@ Meteor.methods({
       }
     }
 
-    // If we get the 4 data
+    // Get the feature type
+    switch (place.id.split('.')[0]) {
+      case 'postcode':
+        postcode = place.text;
+        break;
+      case 'region':
+        region = place.text;
+        break;
+      default:
+
+    }
+
+    // If we get the 3 mandatory data
     if (postcode && region && country && countryCode) {
       return Meteor.users.upsert(userId, {
         $set: {
@@ -98,7 +110,6 @@ Meteor.methods({
       });
     }
     else {
-      console.log('Incomplete location');
       // Incomplete address, throw an error
       throw new Meteor.Error(400, 'Incomplete location');
     }
@@ -112,6 +123,7 @@ Meteor.methods({
    */
   'users.skills.add': function (skillsIds = [], customSkills = []) {
     var userId = Meteor.userId(); if (!userId) { return; }
+    var user = Meteor.user();
 
     // Check if the custom skills labels already exist in the DB
     for (var i = 0; i < customSkills.length; i++) {
@@ -138,11 +150,24 @@ Meteor.methods({
       }
     }
 
-    console.log('skillsIds: ', skillsIds);
+    if (user.profile.skills && user.profile.skills.length) {
+      // Get the user skills
+      var userSkills = user.profile.skills.map(function(skill) {
+        return skill.id;
+      });
+    }
+
+    // Deduplicate and format the skills
+    var skillsToAdd = [];
+    for (var i = 0; i < skillsIds.length; i++) {
+      if (userSkills == undefined || userSkills.indexOf(skillsIds[i]) == -1) {
+        skillsToAdd.push({ id: skillsIds[i] });
+      }
+    }
 
     // Insert the skills into the user profile
     Meteor.users.upsert(userId, {
-      $addToSet: { 'profile.skills': { $each: skillsIds }}
+      $addToSet: { 'profile.skills': { $each: skillsToAdd }}
     });
   }
 });

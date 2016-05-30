@@ -19,10 +19,11 @@ Schema.userProfile = new SimpleSchema({
         return val;
       } else if (
         this.isFromTrustedCode &&
-        this.field('activated').isSet &&
+        this.field('profile.activated').isSet &&
         (this.isUpsert || this.isUpdate)
       ) {
-        var val = this.field('activated');
+        console.log('Has activated field: ', this.field('profile.activated'));
+        var val = this.field('profile.activated').value;
         return val;
       } else {
         this.unset();  // Prevent user from supplying their own value
@@ -67,6 +68,16 @@ Schema.userProfile = new SimpleSchema({
     optional: true
   },
   "skills.$": {
+    type: Object
+  },
+  "skills.$.id": {
+    type: String
+  },
+  "skills.$.endorsements": {
+    type: Array,
+    optional: true
+  },
+  "skills.$.endorsements.$": {
     type: String
   },
   "location": {
@@ -82,7 +93,8 @@ Schema.userProfile = new SimpleSchema({
     optional: true
   },
   "location.postcode": {
-    type: String
+    type: String,
+    optional: true
   },
   "location.region": {
     type: String

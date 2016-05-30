@@ -38,10 +38,10 @@ function search(endpoint, source, accessToken, proximity, query, callback) {
      this.refs.input.focus()
    }
    componentWillMount() {
-     document.addEventListener('click', this.handleClick.bind(this), false);
+     document.addEventListener('geocoderclick', this.handleClick.bind(this), false);
    }
    componentWillUnmount() {
-     document.removeEventListener('click', this.handleClick.bind(this), false);
+     document.removeEventListener('geocoderclick', this.handleClick.bind(this), false);
    }
    // Used by parent via the component ref to modify the inputValue state
    updateInputValue(val) {

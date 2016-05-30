@@ -89,7 +89,6 @@ class AccountActivation extends React.Component {
    * Validate the form and activate the user account
    */
   handleConfirmActivation() {
-    console.log('Enter in handleConfirmActivation');
     // Hide the location confirmation modal by default
     this.refs.locationConfirmModal.hide();
 
@@ -99,7 +98,6 @@ class AccountActivation extends React.Component {
 
     // Check if the user has an professional headline
     if (!this.state.professionalHeadline) {
-      console.log('No professional headline');
       Alert.warning('You must set a professional headline', {
         position: 'top-right',
         effect: 'jelly'
@@ -125,11 +123,12 @@ class AccountActivation extends React.Component {
       return;
     }
 
+    console.log('this.state.location:', this.state.location);
+    console.log('this.state.confirmedPlace:', this.state.confirmedPlace);
     // Check if there is a location value
     if (this.state.location) {
       // If the place hasn't been confirmed
       if (!this.state.confirmedPlace) {
-        console.log('No confirmedPlace');
         // Open the location confirmation modal
         this.openLocationConfirmationModal();
         return;
@@ -168,9 +167,21 @@ class AccountActivation extends React.Component {
       skillsIds,
       customSkills,
       this.state.confirmedPlace,
-      function (err, res) {
+      (err, res) => {
         target.button('reset');
-        if (err) { console.log(err); }
+        if (err) {
+          if (err.reason == 'Incomplete location') {
+            // Unset the confirmedPlace
+            this.setState({confirmedPlace: null});
+
+            Alert.warning(`Incomplete address. \n
+              The address must contain at least a
+              country, a region and a postcode`, {
+              position: 'top-right',
+              effect: 'jelly'
+            });
+          }
+        }
         else {
           let user = Meteor.user();
           // Redirect the user to his profile page
@@ -227,7 +238,6 @@ class AccountActivation extends React.Component {
    */
   // Called by the MapComponent when a revese geocoding request is a success
   mapReverseGeocoding(place) {
-    console.log('Enter in mapReverseGeocoding');
     // Pass the place to the geocoder param
     this.refs.modalGeocoder.updateInputValue(place.place_name);
     // Set the confirmedPlace

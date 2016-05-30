@@ -93,10 +93,10 @@ class ElasticTypeahead extends React.Component {
 		}
   }
   componentWillMount() {
-    document.addEventListener('click', this.handleClick.bind(this), false);
+    document.addEventListener('typeaheadclick', this.handleClick.bind(this), false);
   }
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick.bind(this), false);
+    document.removeEventListener('typeaheadclick', this.handleClick.bind(this), false);
   }
 	handleFocus() {
 		// Display the suggestions list if there is at leat 1 suggestion
