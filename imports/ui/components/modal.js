@@ -21,9 +21,16 @@ class ModalComponent extends React.Component {
   }
 
   render() {
-    var childrens = this.props.children.map(function (child) {
-      return (child);
-    });
+    var childrens = null;
+    if (this.props.children && this.props.children.constructor === Array) {
+      childrens  = this.props.children.map(function (child) {
+        return (child);
+      });
+    }
+    else if (typeof this.props.children === 'object')  {
+      childrens = this.props.children;
+    }
+
 
     return (
       <div

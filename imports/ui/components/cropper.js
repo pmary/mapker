@@ -1,0 +1,124 @@
+import React, { Component, PropTypes } from 'react';
+import Alert from 'react-s-alert';
+import Cropper from 'cropperjs'; // @see https://github.com/fengyuanchen/cropperjs
+import Range from '/imports/ui/components/range.js';
+
+class CropperComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      uploadedImage: null,
+      rangeValue: 0,
+      cropper: null // A Cropper instance
+    };
+  }
+
+  /**
+   * Open the file browser by triggering the file input
+   */
+  openFileBrowser() {
+    // Open the upload file browser
+		this.refs.inputFile.click();
+  }
+
+  /**
+   * Handle the file change
+   */
+  onChangeFile(e) {
+    // Get the file
+    var file = e.target.files[0];
+
+    // If there is a file but its size is too large
+    if (file && file.size >= 2097152) {
+      // Display an error
+      Alert.warning('The file size is too large to upload (max 2MB)', {
+        position: 'top-right',
+        effect: 'jelly'
+      });
+    }
+    // If the file type is not authorized
+    else if (
+      file &&
+      (file.type !== "image/jpeg" && file.type !== "image/png")
+    ) {
+      // Display an error
+      Alert.warning('Only jpeg and png images are authorized', {
+        position: 'top-right',
+        effect: 'jelly'
+      });
+    }
+    else {
+      // Read the image
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        // Display the image into the preview
+        this.setState({uploadedImage: e.target.result});
+        this.refs.previewImg.src = e.target.result;
+
+        // Init an cropper instance
+        var cropper = new Cropper(this.refs.previewImg, this.props.options);
+        if (this.props.cropBoxData) {
+          cropper.setCropBoxData(this.props.cropBoxData);
+          cropper.setCanvasData({height: 160, width: 160});
+        }
+        cropper.zoomTo(0);
+        this.setState({cropper: cropper});
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+  rangeChange(e){
+    this.setState({rangeValue: e.target.value});
+    // If there is a cropper instance
+    if (this.state.cropper) {
+      this.state.cropper.zoomTo(e.target.value/100);
+    }
+  }
+
+  render() {
+    return (
+      <div className={this.props.className + ' cropper-component'}>
+        <input
+          type="file"
+          className="input-file"
+          ref="inputFile"
+          onChange={this.onChangeFile.bind(this)}
+        />
+
+        {/* Display the upload zone only if no image has been uploaded */}
+        { !this.state.uploadedImage &&
+          (<div
+            className="upload-area"
+            onClick={this.openFileBrowser.bind(this)}
+          >
+            Click to browse your files
+          </div>)
+        }
+
+        {/* Display the preview only if an image has been uploaded */}
+        { this.state.uploadedImage &&
+          (<div>
+            <div className="cropper-wrapper">
+              <img ref="previewImg" className="cropper-img" src="#" alt="Your image" />
+            </div>
+            <div className="slider-container">
+              <i className="fa fa-picture-o" aria-hidden="true"></i>
+              <Range
+                className='slider'
+                onChange={this.rangeChange.bind(this)}
+                type='range'
+                value={this.state.rangeValue}
+                min={0}
+                max={300}
+              />
+              <i className="fa fa-picture-o" aria-hidden="true"></i>
+            </div>
+          </div>)
+        }
+      </div>
+    )
+  }
+}
+
+export default CropperComponent;

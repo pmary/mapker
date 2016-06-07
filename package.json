@@ -3,11 +3,14 @@
   "private": true,
   "scripts": {
     "start": "meteor run --settings settings.json",
+    "deploy": "DEPLOY_HOSTNAME=galaxy.meteor.com meteor deploy dev.mapker.co --settings ./settings.json",
+    "deployDev": "DEBUG=* mup deploy",
     "storybook": "start-storybook -p 9001"
   },
   "dependencies": {
     "@kadira/storybook": "^1.24.0",
     "bootstrap": "^3.3.6",
+    "cropperjs": "^0.7.1",
     "elasticsearch": "^11.0.1",
     "mandrill-api": "^1.0.45",
     "meteor-node-stubs": "^0.2.3",

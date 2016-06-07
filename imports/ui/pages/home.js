@@ -4,12 +4,12 @@ import Slideshow from '../components/slideshow/slideshow.js';
 
 let _slides = [
   {
-    backgroundImage: "url(http://dev.mapker.co/images/home/bg-header-1.jpg)",
+    backgroundImage: "url(/images/home/bg-header-1.jpg)",
     backgroundColor: "",
     caption: `<h1>WELCOME TO THE MAKER WORLD</h1>
     <h2>Find place, skills, communities and machines for you projects</h2>
-    <a class="btn btn-default" href="">Sign up</a>
-    <a class="" href="">Login</a>`
+    <a class="btn btn-default" href="/sign-up">Sign up</a>
+    <a class="" href="/sign-in">Login</a>`
   },
   {
     backgroundImage: "",

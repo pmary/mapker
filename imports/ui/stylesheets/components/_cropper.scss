@@ -1,0 +1,71 @@
+.cropper-component {
+  .input-file {
+    display: none;
+  }
+  .upload-area {
+    background-color: #f6f6f6;
+    border: 2px dashed #c9c9c9;
+    border-radius: 3px;
+    color: #c9c9c9;
+    cursor: pointer;
+    font-size: 16px;
+    height: 180px;
+    line-height: 180px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 450px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+  }
+
+  .cropper-img {
+    max-width: 100%
+  }
+
+  .cropper-modal {
+    background-color: #FFF;
+    opacity: 0.75;
+  }
+
+  .cropper-view-box {
+    outline: none;
+  }
+
+  .cropper-face {
+    box-shadow: inset 0 0 0 1px black,inset 0 0 0 1px rgba(0,0,0,0.7),inset 0 0 5px 1px rgba(0,0,0,0.9);
+  }
+
+  .cropper-bg {
+    background: #fff;
+  }
+
+  .slider-container {
+    text-align: center;
+
+    .fa:first-child {
+      font-size: 15px;
+    }
+
+    .slider {
+      display: inline-block;
+      margin-left: 5px;
+      margin-right: 5px;
+      width: 150px;
+    }
+
+    .fa:last-child {
+      font-size: 20px;
+    }
+  }
+
+  &.avatar {
+    .cropper-wrapper {
+      height: 220px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      width: 220px;
+    }
+  }
+}

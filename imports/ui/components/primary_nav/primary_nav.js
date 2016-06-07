@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { IndexLink, Link, browserHistory } from 'react-router';
 import { Glyphicon, Button, Navbar, Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { createContainer } from 'meteor/react-meteor-data';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import MediaQuery from 'react-responsive';
 
@@ -20,6 +21,31 @@ class PrimaryNav extends React.Component {
     })
   }
   render() {
+    var pullRight;
+    if (this.props.user) {
+      pullRight= (
+        <Nav pullRight>
+          <LinkContainer
+            to={{ pathname: '/users/'+this.props.user.profile.username}}
+          >
+            <NavItem>
+              {this.props.user.profile.fullname}
+            </NavItem>
+          </LinkContainer>
+          <NavItem onClick={ this.logout }>Logout</NavItem>
+        </Nav>
+      );
+    }
+    else {
+      pullRight = (
+        <Nav pullRight>
+          <LinkContainer to={{ pathname: '/sign-in'}}>
+            <NavItem onClick={ this.handleNavClick }>Login</NavItem>
+          </LinkContainer>
+        </Nav>
+      );
+    }
+
     return (
       <div>
         <Navbar className="primary-nav navbar-inverse navbar-fixed-top">
@@ -45,19 +71,7 @@ class PrimaryNav extends React.Component {
               <NavItem eventKey={3} href="/">Communities</NavItem>
               <NavItem eventKey={4} href="/">Events</NavItem>
             </Nav>
-            <Nav pullRight>
-              <MediaQuery query='(max-width: 767px)'>
-                <NavItem eventKey={5} href="#">Less than 767px</NavItem>
-              </MediaQuery>
-
-              {Meteor.user() ?
-                <NavItem onClick={ this.logout }>Logout</NavItem>
-                :
-                <LinkContainer to={{ pathname: '/sign-in'}}>
-                  <NavItem onClick={ this.handleNavClick }>Login</NavItem>
-                </LinkContainer>
-              }
-            </Nav>
+            {pullRight}
           </Navbar.Collapse>
         </Navbar>
       </div>
@@ -65,4 +79,23 @@ class PrimaryNav extends React.Component {
   }
 }
 
-export default PrimaryNav;
+// Define the type of the given properties
+PrimaryNav.propTypes = {
+  user: PropTypes.object
+}
+
+/**
+ * Create a container component to reactively render the wrapped component in
+ * response to any changes to reactive data sources accessed from inside the
+ * function proded to it.
+ *
+ * @see http://guide.meteor.com/react.html#data
+ */
+export default createContainer (({ params }) => {
+  const user = Meteor.user();
+
+  return {
+    user
+  }
+
+}, PrimaryNav);

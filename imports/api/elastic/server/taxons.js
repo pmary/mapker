@@ -99,6 +99,7 @@ function createIndex (indexName, body) {
  * @return The result of the ES bulk query
  */
 function bulkIndex (taxons) {
+  console.log('Enter in bulkIndex');
   return new Promise(function (resolve, reject) {
     var bulkArray = [];
     taxons.map(function (doc) {
@@ -120,7 +121,7 @@ function bulkIndex (taxons) {
 
     Elastic.bulk({body: bulkArray}, function (err, res) {
       if (err) { console.log('Err: ',err); reject(err); }
-      else { console.log('All right'); ;resolve(true); }
+      else { /*console.log('All right');*/ ;resolve(true); }
     })
   });
 }

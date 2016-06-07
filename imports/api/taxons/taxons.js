@@ -61,7 +61,7 @@ Taxons.schema = new SimpleSchema({
     type: String,
     optional: true,
     autoValue: function() {
-      var userId = Meteor.userId();
+      var userId = this.userId;
       if (userId) {
         return userId;
       } else {
