@@ -13,6 +13,18 @@ class ModalComponent extends React.Component {
     $('#'+this.props.id).modal('hide');
   }
 
+  componentDidMount() {
+    $(this.refs.modal).on('hidden.bs.modal', () => {
+      this.onClose();
+    });
+  }
+
+  onClose() {
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+  }
+
   onConfirm() {
     // If there is a callback function
     if (this.props.onConfirm) {
@@ -36,6 +48,7 @@ class ModalComponent extends React.Component {
       <div
         className={this.props.className + " modal fade" }
         id={this.props.id}
+        ref="modal"
         tabindex="-1"
         role="dialog"
       >

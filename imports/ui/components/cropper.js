@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import Alert from 'react-s-alert';
 import Cropper from 'cropperjs'; // @see https://github.com/fengyuanchen/cropperjs
-import Range from '/imports/ui/components/range.js';
+//import Range from '/imports/ui/components/range.js';
+import Range from 'range-input-react';
+import 'range-input-react/style.css';
 
 class CropperComponent extends React.Component {
   constructor(props) {
@@ -58,22 +60,38 @@ class CropperComponent extends React.Component {
 
         // Init an cropper instance
         var cropper = new Cropper(this.refs.previewImg, this.props.options);
-        if (this.props.cropBoxData) {
-          cropper.setCropBoxData(this.props.cropBoxData);
-          cropper.setCanvasData({height: 160, width: 160});
-        }
-        cropper.zoomTo(0);
-        this.setState({cropper: cropper});
+
+        // When the cropper instance has built completely
+        this.refs.previewImg.addEventListener('built', () => {
+          if  (this.props.cropBoxData) {
+            cropper.setCropBoxData(this.props.cropBoxData);
+            cropper.setCanvasData({height: 160, width: 160});
+          }
+          cropper.zoomTo(0);
+          this.setState({cropper: cropper});
+        });
       }
       reader.readAsDataURL(file);
     }
   }
   rangeChange(e){
-    this.setState({rangeValue: e.target.value});
+    this.setState({rangeValue: parseInt(e.target.value)});
     // If there is a cropper instance
     if (this.state.cropper) {
       this.state.cropper.zoomTo(e.target.value/100);
     }
+  }
+
+  /**
+   * Reset the cropper state
+   */
+  reset() {
+    if (this.state.cropper) {this.state.cropper.destroy();}
+    this.setState({
+      uploadedImage: null,
+      rangeValue: 0,
+      cropper: null // A Cropper instance
+    });
   }
 
   render() {
@@ -105,7 +123,7 @@ class CropperComponent extends React.Component {
             <div className="slider-container">
               <i className="fa fa-picture-o" aria-hidden="true"></i>
               <Range
-                className='slider'
+                className='slider material'
                 onChange={this.rangeChange.bind(this)}
                 type='range'
                 value={this.state.rangeValue}

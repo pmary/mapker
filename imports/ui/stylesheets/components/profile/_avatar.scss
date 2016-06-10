@@ -1,0 +1,47 @@
+.avatar-container {
+  background-color: #fff;
+  border: 3px solid #fff;
+  border-radius: 160px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  height: 160px;
+  left: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 64px;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  width: 160px;
+
+  &.no-avatar {
+    background-image: url(/images/home/home-pictos.svg);
+    display: block;
+    background-position: -176px 164px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .edit-avatar-btn {
+    background-color: rgba(0, 0, 0, 0.4);
+    bottom: 0px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 20px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 426px) {
+    margin-top: 0px;
+  }
+}
