@@ -94,6 +94,20 @@ class CropperComponent extends React.Component {
     });
   }
 
+  /**
+   * Crop the image
+   * @return {Object} A promise, then an image blob
+   */
+  getCroppedDataUrl() {
+    if (!this.state.cropper) { return; }
+
+    let dataURL = this.state.cropper.getCroppedCanvas({
+      width: 160, height: 160, fillColor: "#ffffff"
+    }).toDataURL();
+
+    return dataURL;
+  }
+
   render() {
     return (
       <div className={this.props.className + ' cropper-component'}>

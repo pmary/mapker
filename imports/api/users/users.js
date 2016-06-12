@@ -10,6 +10,15 @@ if (Meteor.isServer) {
 // Shema definition
 Schema = {};
 
+var imageSchema = new SimpleSchema({
+  url: {
+    type: SimpleSchema.RegEx.Url
+  },
+  key: {
+    type: String
+  }
+});
+
 Schema.userProfile = new SimpleSchema({
   activated: {
     type: Boolean,
@@ -29,6 +38,10 @@ Schema.userProfile = new SimpleSchema({
         this.unset();  // Prevent user from supplying their own value
       }
     }
+  },
+  avatar: {
+    type: imageSchema,
+    optional: true
   },
   firstname: {
     type: String,

@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Modal from '/imports/ui/components/modal.js';
 import Cropper from '/imports/ui/components/cropper.js';
 
@@ -55,9 +55,10 @@ class ProfileCover extends React.Component {
     console.log('Confirm');
   }
   render() {
+    let className = "cover-container no-cover " + this.props.type;
     return (
       <div>
-        <div className="cover-container no-cover">
+        <div className={className}>
           <a
             className="edit-cover-btn"
             onClick={this.upload.bind(this, 'cover')}
@@ -88,6 +89,14 @@ class ProfileCover extends React.Component {
       </div>
     )
   }
+}
+
+ProfileCover.propTypes = {
+  type: PropTypes.string
+}
+
+ProfileCover.defaultProps = {
+  type: ''
 }
 
 export default ProfileCover;

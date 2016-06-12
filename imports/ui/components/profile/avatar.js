@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Modal from '/imports/ui/components/modal.js';
 import Cropper from '/imports/ui/components/cropper.js';
 
@@ -30,23 +30,38 @@ class ProfileAvatar extends React.Component {
     }
   }
   modalOnClose() {
-    console.log('Close !');
     this.refs.avatarCropper.reset();
+  }
+  /**
+   * @description
+   * At the modal confirm event, get the cropped image Blob data and upload it
+   */
+  modalOnConfirm() {
+    // Get the cropped image Blob data
+    var dataURL = this.refs.avatarCropper.getCroppedDataUrl();
+    if (dataURL && this.props.type) {
+      switch (this.props.type) {
+        case 'user':
+          Meteor.call('user.avatar.update', dataURL, function (err, res) {
+            if (err) { console.log(err); }
+            console.log(res);
+          });
+          break;
+
+        case 'place':
+          break;
+      }
+    }
   }
   upload(type) {
     // Open the modal
     this.refs.avatarUploadModal.show();
   }
-  /**
-   * Modal component control
-   */
-  modalOnConfirm() {
-    console.log('Confirm');
-  }
   render() {
+    let className = "avatar-container no-avatar " + this.props.type;
     return (
       <div>
-        <div className="avatar-container no-avatar">
+        <div className={className}>
           <a
             className="edit-avatar-btn"
             onClick={this.upload.bind(this, 'avatar')}
@@ -75,6 +90,14 @@ class ProfileAvatar extends React.Component {
       </div>
     )
   }
+}
+
+ProfileAvatar.propTypes = {
+  type: PropTypes.oneOf(['user', 'place'])
+}
+
+ProfileAvatar.defaultProps = {
+  type: null
 }
 
 export default ProfileAvatar;

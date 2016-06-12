@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Taxons } from '/imports/api/taxons/taxons.js';
+import { aws } from '/imports/api/aws/server/methods';
 
 Meteor.methods({
   /**
@@ -168,6 +169,57 @@ Meteor.methods({
     // Insert the skills into the user profile
     Meteor.users.upsert(userId, {
       $addToSet: { 'profile.skills': { $each: skillsToAdd }}
+    });
+  },
+  /**
+   * @description
+   * Get a blob image object, upload it to the aws bucket and update the user
+   * profile accordingly
+   *
+   * @param {String} dataURL - Encoded image data in data URI scheme (RFC 2397)
+   * @see https://developer.mozilla.org/fr/docs/Web/API/Blob
+   */
+  'user.avatar.update': function (dataURL) {
+    var userId = Meteor.userId(); if (!userId) { return; }
+    var user = Meteor.user();
+    check(dataURL, String);
+
+    // Only get the image data
+    let data = dataURL.replace(/^data:image\/\w+;base64,/, "");
+    // Encore it into base64 and return the image as a Buffer
+    // @doc https://nodejs.org/api/buffer.html
+    let buf = new Buffer(data, 'base64');
+    // Create a unique name for the image. It will be the S3 object key
+    var key = userId + '/avatar-' + Date.now();
+
+    // Upload to S3 and get back the uploaded file url asyncronously
+    let params = {
+      Key: key,
+      Body: buf,
+      ContentType: 'image/png',
+      ACL: 'public-read'
+    };
+
+    return aws.s3.upload(params)
+    .then(function (imageUrl) {
+      console.log('Upload res: ', imageUrl);
+      // Delete the old avatar if exist
+      if (user.profile.avatar) {
+        aws.s3.deleteObject(user.profile.avatar.key);
+      }
+      return imageUrl;
+    })
+    .then(function (imageUrl) {
+      console.log('imageUrl: ', imageUrl);
+      // Upadate the user document with the new avatar url
+      Meteor.users.update(userId, {
+        $set: {'profile.avatar': {
+          url: imageUrl,
+          key: key
+        }}
+      });
+
+      return 'yop';
     });
   }
 });
