@@ -177,12 +177,15 @@ Meteor.methods({
    * profile accordingly
    *
    * @param {String} dataURL - Encoded image data in data URI scheme (RFC 2397)
+   * @param {String} type - Can be 'avatar' or 'cover'. The type of profile
+   * picture to update
    * @see https://developer.mozilla.org/fr/docs/Web/API/Blob
    */
-  'user.avatar.update': function (dataURL) {
+  'user.profilePicture.update': function (dataURL, type) {
     var userId = Meteor.userId(); if (!userId) { return; }
     var user = Meteor.user();
     check(dataURL, String);
+    check(type, String);
 
     // Only get the image data
     let data = dataURL.replace(/^data:image\/\w+;base64,/, "");
@@ -190,7 +193,7 @@ Meteor.methods({
     // @doc https://nodejs.org/api/buffer.html
     let buf = new Buffer(data, 'base64');
     // Create a unique name for the image. It will be the S3 object key
-    var key = userId + '/avatar-' + Date.now();
+    var key = userId + '/' + type + '-' + Date.now();
 
     // Upload to S3 and get back the uploaded file url asyncronously
     let params = {
@@ -202,21 +205,18 @@ Meteor.methods({
 
     return aws.s3.upload(params)
     .then(function (imageUrl) {
-      // Delete the old avatar if exist
-      if (user.profile.avatar) {
-        aws.s3.deleteObject(user.profile.avatar.key);
+      // Delete the old avatar/cover if exist
+      if (user.profile[type]) {
+        aws.s3.deleteObject(user.profile[type].key);
       }
       return imageUrl;
     })
     .then(function (imageUrl) {
-      // Upadate the user document with the new avatar url
-      Meteor.users.update(userId, {
-        $set: {'profile.avatar': {
-          url: imageUrl,
-          key: key
-        }}
-      });
+      // Update the user document with the new avatar url
+      var set = {};
+      set['profile.'+type] = {url: imageUrl, key: key};
 
+      Meteor.users.update(userId, { $set: set });
       return imageUrl;
     });
   }

@@ -43,13 +43,12 @@ class ProfileAvatar extends React.Component {
     if (dataURL && this.props.type) {
       switch (this.props.type) {
         case 'user':
-          Meteor.call('user.avatar.update', dataURL, (err, res) => {
+          Meteor.call('user.profilePicture.update', dataURL, 'avatar', (err, res) => {
             if (err) { console.log(err); }
             else {
               // Close the modal
               this.refs.avatarUploadModal.hide();
             }
-
           });
           break;
 
@@ -102,7 +101,9 @@ class ProfileAvatar extends React.Component {
             className="avatar"
             ref="avatarCropper"
             options={this.state.avatarCropperOptions}
-            cropBoxData={{left: 30, top: 30,width: 160, height: 160}}
+            cropBoxData={{left: 30, top: 30, width: 160, height: 160}}
+            canvasData={{height: 160, width: 160}}
+            outputOptions={{height: 160, width: 160}}
           />
         </Modal>
       </div>

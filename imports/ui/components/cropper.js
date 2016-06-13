@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Alert from 'react-s-alert';
 import Cropper from 'cropperjs'; // @see https://github.com/fengyuanchen/cropperjs
-//import Range from '/imports/ui/components/range.js';
 import Range from 'range-input-react';
 import 'range-input-react/style.css';
 
@@ -63,10 +62,9 @@ class CropperComponent extends React.Component {
 
         // When the cropper instance has built completely
         this.refs.previewImg.addEventListener('built', () => {
-          if  (this.props.cropBoxData) {
-            this.state.cropper.setCropBoxData(this.props.cropBoxData);
-            this.state.cropper.setCanvasData({height: 160, width: 160});
-          }
+          // Adjust the parameters
+          this.state.cropper.setCropBoxData(this.props.cropBoxData);
+          this.state.cropper.setCanvasData(this.props.canvasData);
           this.state.cropper.zoomTo(0);
         });
       }
@@ -103,10 +101,25 @@ class CropperComponent extends React.Component {
    */
   getCroppedDataUrl() {
     if (!this.state.cropper) { return; }
+    var dataURL;
 
-    let dataURL = this.state.cropper.getCroppedCanvas({
-      width: 160, height: 160, fillColor: "#ffffff"
-    }).toDataURL();
+    // If there is output options
+    if (
+      this.props.outputOptions &&
+      this.props.outputOptions.height &&
+      this.props.outputOptions.width
+    ) {
+      dataURL = this.state.cropper.getCroppedCanvas({
+        width: this.props.outputOptions.width,
+        height: this.props.outputOptions.height,
+        fillColor: "#ffffff"
+      }).toDataURL();
+    }
+    else {
+      dataURL = this.state.cropper.getCroppedCanvas({
+        fillColor: "#ffffff"
+      }).toDataURL();
+    }
 
     return dataURL;
   }
@@ -154,6 +167,18 @@ class CropperComponent extends React.Component {
       </div>
     )
   }
+}
+
+CropperComponent.propTypes = {
+  className: PropTypes.string,
+  options: PropTypes.object.isRequired,
+  cropBoxData: PropTypes.object.isRequired,
+  canvasData: PropTypes.object.isRequired,
+  outputOptions: PropTypes.object
+}
+
+CropperComponent.defaultProps = {
+  className: ''
 }
 
 export default CropperComponent;

@@ -68,4 +68,14 @@
       width: 220px;
     }
   }
+
+  &.cover {
+    .cropper-wrapper {
+      height: 130px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      width: 440px;
+    }
+  }
 }

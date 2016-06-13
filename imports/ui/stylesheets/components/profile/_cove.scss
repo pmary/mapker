@@ -13,6 +13,11 @@
     background-size: contain;
   }
 
+  &.has-cover {
+    background-position: center;
+    background-size: cover;
+  }
+
   .edit-cover-btn {
     top: 79px;
     left: 20px;

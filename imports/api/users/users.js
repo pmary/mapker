@@ -43,6 +43,10 @@ Schema.userProfile = new SimpleSchema({
     type: imageSchema,
     optional: true
   },
+  cover: {
+    type: imageSchema,
+    optional: true
+  },
   firstname: {
     type: String,
     min: 2,
