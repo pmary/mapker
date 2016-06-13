@@ -33,6 +33,8 @@ class ProfileCover extends React.Component {
   }
   modalOnClose() {
     this.refs.coverCropper.reset();
+    // Hide the modal confirm button
+    this.setState({modalShowConfirmBtn: false});
   }
   /**
    * @description

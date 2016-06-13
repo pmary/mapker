@@ -33,6 +33,8 @@ class ProfileAvatar extends React.Component {
   }
   modalOnClose() {
     this.refs.avatarCropper.reset();
+    // Hide the modal confirm button
+    this.setState({modalShowConfirmBtn: false});
   }
   /**
    * @description
