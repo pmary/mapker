@@ -37,7 +37,6 @@ export const aws = {
      * @see http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property
      */
     deleteObject: function (key) {
-      console.log('Will delete ', key);
       return new Promise((resolve, reject) => {
         s3.deleteObject({Key: key}, function(err, data) {
           if (err) { console.log('err: ', err);reject(err); }

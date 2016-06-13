@@ -27,7 +27,8 @@ class ProfileAvatar extends React.Component {
         zoomOnTouch: false,
         zoomOnWheel: false
       },
-      modalTitle: 'Upload your avatar'
+      modalTitle: 'Upload your avatar',
+      modalShowConfirmBtn: false
     }
   }
   modalOnClose() {
@@ -48,6 +49,8 @@ class ProfileAvatar extends React.Component {
             else {
               // Close the modal
               this.refs.avatarUploadModal.hide();
+              // Hide the modal confirm button
+              this.setState({modalShowConfirmBtn: false});
             }
           });
           break;
@@ -60,6 +63,13 @@ class ProfileAvatar extends React.Component {
   upload(type) {
     // Open the modal
     this.refs.avatarUploadModal.show();
+  }
+  /**
+   * Methode passed to the cropper component to get the instantiate event
+   */
+  onCropperInstantiate() {
+    // Display the confirm btn of the modal
+    this.setState({modalShowConfirmBtn: true});
   }
   render() {
     let className = "avatar-container " + this.props.type;
@@ -94,12 +104,14 @@ class ProfileAvatar extends React.Component {
           btnCancelText="Cancel"
           onClose={this.modalOnClose.bind(this)}
           onConfirm={this.modalOnConfirm.bind(this)}
+          showConfirmBtn={this.state.modalShowConfirmBtn}
           ref="avatarUploadModal"
           title={this.state.modalTitle}
         >
           <Cropper
             className="avatar"
             ref="avatarCropper"
+            onInstantiate={this.onCropperInstantiate.bind(this)}
             options={this.state.avatarCropperOptions}
             cropBoxData={{left: 30, top: 30, width: 160, height: 160}}
             canvasData={{height: 160, width: 160}}

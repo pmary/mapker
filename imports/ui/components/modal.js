@@ -43,7 +43,6 @@ class ModalComponent extends React.Component {
       childrens = this.props.children;
     }
 
-
     return (
       <div
         className={this.props.className + " modal fade" }
@@ -70,17 +69,19 @@ class ModalComponent extends React.Component {
             </div>
             <div className="modal-footer">
               <div className="pull-right">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.onConfirm.bind(this)}
-                >
-                  {
-                    this.props.btnConfirmText ?
-                      this.props.btnConfirmText :
-                      'Confirm'
-                  }
-                </button>
+                {this.props.showConfirmBtn && (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onConfirm.bind(this)}
+                  >
+                    {
+                      (this.props.btnConfirmText) ?
+                        this.props.btnConfirmText :
+                        'Confirm'
+                    }
+                  </button>
+                )}
               </div>
               <div className="pull-left">
                 <button
@@ -106,6 +107,7 @@ class ModalComponent extends React.Component {
 ModalComponent.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
+  showConfirmBtn: PropTypes.bool
   /*body: PropTypes.string,
   offset: PropTypes.number,
   stack: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
@@ -117,6 +119,12 @@ ModalComponent.propTypes = {
   onShow: PropTypes.func,
   customFields: PropTypes.object,
   contentTemplate: PropTypes.func*/
+};
+
+ModalComponent.defaultProps = {
+  id: null,
+  title: '',
+  showConfirmBtn: true
 };
 
 export default ModalComponent;

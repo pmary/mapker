@@ -59,6 +59,8 @@ class CropperComponent extends React.Component {
 
         // Init an cropper instance
         this.setState({cropper: new Cropper(this.refs.previewImg, this.props.options) });
+        // Fired the onInstantiate methode
+        this.props.onInstantiate();
 
         // When the cropper instance has built completely
         this.refs.previewImg.addEventListener('built', () => {
@@ -170,6 +172,7 @@ class CropperComponent extends React.Component {
 }
 
 CropperComponent.propTypes = {
+  onInstantiate: PropTypes.func,
   className: PropTypes.string,
   options: PropTypes.object.isRequired,
   cropBoxData: PropTypes.object.isRequired,
@@ -178,6 +181,7 @@ CropperComponent.propTypes = {
 }
 
 CropperComponent.defaultProps = {
+  onInstantiate() {},
   className: ''
 }
 

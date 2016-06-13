@@ -12,7 +12,7 @@ class ProfileCover extends React.Component {
       coverCropperOptions: {
         viewMode: 1,
         dragMode: 'move',
-        //aspectRatio: 1/1,
+        aspectRatio: 256/75,
         guides: false,
         center: false,
         cropBoxMovable: false,
@@ -27,7 +27,8 @@ class ProfileCover extends React.Component {
         zoomOnTouch: false,
         zoomOnWheel: false
       },
-      modalTitle: 'Upload your cover'
+      modalTitle: 'Upload your cover',
+      modalShowConfirmBtn: false
     }
   }
   modalOnClose() {
@@ -48,6 +49,8 @@ class ProfileCover extends React.Component {
             else {
               // Close the modal
               this.refs.coverUploadModal.hide();
+              // Hide the modal confirm button
+              this.setState({modalShowConfirmBtn: false});
             }
           });
           break;
@@ -61,11 +64,17 @@ class ProfileCover extends React.Component {
     // Open the modal
     this.refs.coverUploadModal.show();
   }
+  /**
+   * Methode passed to the cropper component to get the instantiate event
+   */
+  onCropperInstantiate() {
+    // Display the confirm btn of the modal
+    this.setState({modalShowConfirmBtn: true});
+  }
   render() {
     let className = "cover-container " + this.props.type;
     var style = {};
     // If the user has a cover
-    console.log('user: ', this.props.user);
     if (
       this.props.user &&
       this.props.user.profile &&
@@ -98,12 +107,14 @@ class ProfileCover extends React.Component {
           btnCancelText="Cancel"
           onClose={this.modalOnClose.bind(this)}
           onConfirm={this.modalOnConfirm.bind(this)}
+          showConfirmBtn={this.state.modalShowConfirmBtn}
           ref="coverUploadModal"
           title={this.state.modalTitle}
         >
           <Cropper
             className="cover"
             ref="coverCropper"
+            onInstantiate={this.onCropperInstantiate.bind(this)}
             options={this.state.coverCropperOptions}
             cropBoxData={{left: 30, top: 30, width: 110, height: 420}}
             canvasData={{height: 420, width: 110}}
