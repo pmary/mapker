@@ -30,6 +30,7 @@ class CropperComponent extends React.Component {
   onChangeFile(e) {
     // Get the file
     var file = e.target.files[0];
+    console.log('file: ', file);
 
     // If there is a file but its size is too large
     if (file && file.size >= 2097152) {
@@ -59,16 +60,15 @@ class CropperComponent extends React.Component {
         this.refs.previewImg.src = e.target.result;
 
         // Init an cropper instance
-        var cropper = new Cropper(this.refs.previewImg, this.props.options);
+        this.setState({cropper: new Cropper(this.refs.previewImg, this.props.options) });
 
         // When the cropper instance has built completely
         this.refs.previewImg.addEventListener('built', () => {
           if  (this.props.cropBoxData) {
-            cropper.setCropBoxData(this.props.cropBoxData);
-            cropper.setCanvasData({height: 160, width: 160});
+            this.state.cropper.setCropBoxData(this.props.cropBoxData);
+            this.state.cropper.setCanvasData({height: 160, width: 160});
           }
-          cropper.zoomTo(0);
-          this.setState({cropper: cropper});
+          this.state.cropper.zoomTo(0);
         });
       }
       reader.readAsDataURL(file);
@@ -86,7 +86,11 @@ class CropperComponent extends React.Component {
    * Reset the cropper state
    */
   reset() {
-    if (this.state.cropper) {this.state.cropper.destroy();}
+    // Destroy the cropper instance
+    if (this.state.cropper) { this.state.cropper.destroy(); }
+    // Clear the file input
+    this.refs.inputFile.value = null;
+    // Reset the component state
     this.setState({
       uploadedImage: null,
       rangeValue: 0,
