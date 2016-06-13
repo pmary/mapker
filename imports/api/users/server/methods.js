@@ -202,7 +202,6 @@ Meteor.methods({
 
     return aws.s3.upload(params)
     .then(function (imageUrl) {
-      console.log('Upload res: ', imageUrl);
       // Delete the old avatar if exist
       if (user.profile.avatar) {
         aws.s3.deleteObject(user.profile.avatar.key);
@@ -210,7 +209,6 @@ Meteor.methods({
       return imageUrl;
     })
     .then(function (imageUrl) {
-      console.log('imageUrl: ', imageUrl);
       // Upadate the user document with the new avatar url
       Meteor.users.update(userId, {
         $set: {'profile.avatar': {
@@ -219,7 +217,7 @@ Meteor.methods({
         }}
       });
 
-      return 'yop';
+      return imageUrl;
     });
   }
 });

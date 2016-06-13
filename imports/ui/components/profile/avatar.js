@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { PropTypes } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
 import Modal from '/imports/ui/components/modal.js';
 import Cropper from '/imports/ui/components/cropper.js';
 
@@ -42,9 +43,13 @@ class ProfileAvatar extends React.Component {
     if (dataURL && this.props.type) {
       switch (this.props.type) {
         case 'user':
-          Meteor.call('user.avatar.update', dataURL, function (err, res) {
+          Meteor.call('user.avatar.update', dataURL, (err, res) => {
             if (err) { console.log(err); }
-            console.log(res);
+            else {
+              // Close the modal
+              this.refs.avatarUploadModal.hide();
+            }
+
           });
           break;
 
@@ -58,10 +63,23 @@ class ProfileAvatar extends React.Component {
     this.refs.avatarUploadModal.show();
   }
   render() {
-    let className = "avatar-container no-avatar " + this.props.type;
+    let className = "avatar-container " + this.props.type;
+    var style = {};
+    // If the user has a cover
+    if (
+      this.props.user &&
+      this.props.user.profile &&
+      this.props.user.profile.avatar &&
+      this.props.user.profile.avatar.url
+    ) {
+      style = {backgroundImage: `url(${this.props.user.profile.avatar.url})`};
+      className += ' has-avatar'
+    }
+    else { className += ' no-avatar'; }
+
     return (
       <div>
-        <div className={className}>
+        <div className={className} style={style}>
           <a
             className="edit-avatar-btn"
             onClick={this.upload.bind(this, 'avatar')}
@@ -93,11 +111,26 @@ class ProfileAvatar extends React.Component {
 }
 
 ProfileAvatar.propTypes = {
-  type: PropTypes.oneOf(['user', 'place'])
+  type: PropTypes.oneOf(['user', 'place']),
+  user: PropTypes.object
 }
 
 ProfileAvatar.defaultProps = {
   type: null
 }
 
-export default ProfileAvatar;
+/**
+ * Create a container component to reactively render the wrapped component in
+ * response to any changes to reactive data sources accessed from inside the
+ * function proded to it.
+ *
+ * @see http://guide.meteor.com/react.html#data
+ */
+export default createContainer (({ params }) => {
+  const user = Meteor.user();
+
+  return {
+    user
+  }
+
+}, ProfileAvatar);

@@ -30,7 +30,6 @@ class CropperComponent extends React.Component {
   onChangeFile(e) {
     // Get the file
     var file = e.target.files[0];
-    console.log('file: ', file);
 
     // If there is a file but its size is too large
     if (file && file.size >= 2097152) {

@@ -8,7 +8,7 @@ class ProfileCover extends React.Component {
     super(props);
 
     this.state = {
-      avatarCropperOptions: {
+      coverCropperOptions: {
         viewMode: 1,
         dragMode: 'move',
         aspectRatio: 1/1,
@@ -26,23 +26,32 @@ class ProfileCover extends React.Component {
         zoomOnTouch: false,
         zoomOnWheel: false
       },
-      coverCropperOptions: {
-        movable: false,
-        strict: true, // When false, image can't be smaller than the cropbox
-        minCropBoxWidth: 422,
-        minCropBoxHeight: 93,
-        minCanvasWidth: 422,
-        minCanvasHeight: 93,
-        autoCrop: true,
-        guides: false,
-        dragCrop: false,
-        resizable: false
-      },
       modalTitle: 'Upload your cover'
     }
   }
   modalOnClose() {
     this.refs.coverCropper.reset();
+  }
+  /**
+   * @description
+   * At the modal confirm event, get the cropped image Blob data and upload it
+   */
+  modalOnConfirm() {
+    // Get the cropped image Blob data
+    var dataURL = this.refs.coverCropper.getCroppedDataUrl();
+    if (dataURL && this.props.type) {
+      switch (this.props.type) {
+        case 'user':
+          Meteor.call('user.cover.update', dataURL, function (err, res) {
+            if (err) { console.log(err); }
+            console.log(res);
+          });
+          break;
+
+        case 'place':
+          break;
+      }
+    }
   }
   upload(type) {
     // Open the modal
@@ -67,8 +76,9 @@ class ProfileCover extends React.Component {
           </a>
 
           {this.props.children}
-
+          
         </div>
+
         <Modal
           className="upload-modal"
           id="cover-upload-modal"
@@ -80,9 +90,9 @@ class ProfileCover extends React.Component {
           title={this.state.modalTitle}
         >
           <Cropper
-            className="avatar"
+            className="cover"
             ref="coverCropper"
-            options={this.state.avatarCropperOptions}
+            options={this.state.coverCropperOptions}
             cropBoxData={{left: 30, top: 30,width: 160, height: 160}}
           />
         </Modal>
@@ -92,11 +102,11 @@ class ProfileCover extends React.Component {
 }
 
 ProfileCover.propTypes = {
-  type: PropTypes.string
+  type: PropTypes.oneOf(['user', 'place'])
 }
 
 ProfileCover.defaultProps = {
-  type: ''
+  type: null
 }
 
 export default ProfileCover;

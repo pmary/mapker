@@ -28,6 +28,11 @@
     margin-right: auto;
   }
 
+  &.has-avatar {
+    background-position: center;
+    background-size: contain;
+  }
+
   .edit-avatar-btn {
     background-color: rgba(0, 0, 0, 0.4);
     bottom: 0px;
