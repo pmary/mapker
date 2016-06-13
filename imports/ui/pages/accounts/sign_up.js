@@ -113,8 +113,8 @@ class SignUp extends React.Component{
       }
     });
   }
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit(e) {
+    e.preventDefault();
 
     // Set the submit btn state to loading
     var target = $('.btn-submit');

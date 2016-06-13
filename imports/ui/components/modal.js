@@ -22,12 +22,14 @@ class ModalComponent extends React.Component {
   onClose() {
     if (this.props.onClose) {
       this.props.onClose();
+      $(this.refs.confirmBtn).button('reset');
     }
   }
 
   onConfirm() {
     // If there is a callback function
     if (this.props.onConfirm) {
+      $(this.refs.confirmBtn).button('loading');
       this.props.onConfirm();
     }
   }
@@ -72,8 +74,10 @@ class ModalComponent extends React.Component {
                 {this.props.showConfirmBtn && (
                   <button
                     type="button"
+                    ref="confirmBtn"
                     className="btn btn-primary"
                     onClick={this.onConfirm.bind(this)}
+                    data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i>"
                   >
                     {
                       (this.props.btnConfirmText) ?
