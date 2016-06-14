@@ -322,7 +322,7 @@ class AccountActivation extends React.Component {
               </div>
 
               <div className="panel-body">
-                <span className="picto-sprite-skill-no-legend"></span>
+                <span className="picto-sprite-user-no-legend"></span>
 
                 <form onSubmit={function (e) { e.preventDefault(); }}>
                   <h2>What is your professional headline?</h2>

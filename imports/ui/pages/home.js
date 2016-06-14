@@ -21,7 +21,7 @@ let _slides = [
     backgroundImage: "",
     backgroundColor: "rgba(32, 222, 194, 0.8)",
     caption: "Find the coworkers you need",
-    picto: 'picto-sprite-skill-legend'
+    picto: 'picto-sprite-user-legend'
   },
   {
     backgroundImage: "",

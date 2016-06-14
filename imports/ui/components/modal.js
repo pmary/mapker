@@ -109,7 +109,7 @@ class ModalComponent extends React.Component {
 }
 
 ModalComponent.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
   title: PropTypes.string,
   showConfirmBtn: PropTypes.bool
   /*body: PropTypes.string,
@@ -126,7 +126,6 @@ ModalComponent.propTypes = {
 };
 
 ModalComponent.defaultProps = {
-  id: null,
   title: '',
   showConfirmBtn: true
 };
