@@ -75,7 +75,13 @@
       margin-left: auto;
       margin-right: auto;
       position: relative;
-      width: 440px;
+      width: 100%;
+    }
+
+    @media(min-width: 500px) {
+      .cropper-wrapper {
+        width: 440px;
+      }
     }
   }
 }

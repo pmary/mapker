@@ -5,6 +5,11 @@ body {
 	font-family: 'Montserrat', sans-serif;
 }
 
+a, button, input {
+  -ms-touch-action: manipulation;	/* IE10  */
+	touch-action: manipulation;		/* IE11+ */
+}
+
 /**
  * Animations
  */
