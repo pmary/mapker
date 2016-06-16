@@ -100,17 +100,19 @@ class ProfileDetails extends React.Component {
           col-xs-12
           col-sm-12
           col-md-8 col-md-offset-2
-          col-lg-8 col-lg-offset-2"
+          col-lg-8 col-lg-offset-2
+          personal-infos-container"
         >
-          <div className="pull-left">
-            <span className={`picto-sprite-${this.props.type}-no-legend`}></span>
-
-            <span className="profile-details-container__username">
-              {this.props.name}
-              <span className="profile-details-container__alias">
-                @{this.props.alias}
+          <div className="pull-left personal-infos">
+            <div>
+              <span className={`picto-sprite-${this.props.type}-no-legend`}></span>
+              <span className="profile-details-container__username">
+                {this.props.name}
+                <span className="profile-details-container__alias">
+                  @{this.props.alias}
+                </span>
               </span>
-            </span>
+            </div>
             <span className="profile-details-container__main-activity">
               {this.props.headline}
             </span>

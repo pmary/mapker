@@ -1,11 +1,22 @@
 .profile-details-container {
   background-color: #fff;
   padding-bottom: 10px;
-  padding-top: 5px;
+  padding-top: 50px;
+
+  .personal-infos-container {
+    text-align: center;
+
+    .personal-infos {
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      float: none !important;
+    }
+  }
 
   .picto-sprite-user-no-legend {
     display: inline-block;
-    float: left;
     height: 130px;
     margin-left: 0px;
     margin-right: 0px;
@@ -17,13 +28,15 @@
     font-size: 18px;
     font-weight: 500;
     position: relative;
-    top: 14px;
+    text-transform: uppercase;
+    top: -6px;
   }
 
   .profile-details-container__alias {
     color: #919191;
     font-size: 12px;
     font-weight: 300;
+    text-transform: none;
   }
 
   .profile-details-container__main-activity {
@@ -31,14 +44,14 @@
     display: block;
     font-size: 14px;
     font-weight: 300;
-    margin-left: 50px;
+    position: relative;
+    top: -3px;
   }
 
   .profile-details-container__location {
     color: #919191;
     font-size: 12px;
     font-weight: 300;
-    margin-left: 50px;
     margin-top: 10px;
   }
 
@@ -56,11 +69,48 @@
 
   .details-edit-btn {
     cursor: pointer;
-    display: inline-block;
+    display: block;
+    float: none !important;
     font-size: 19px;
-    left: 20px;
     position: relative;
-    top: 36px;
     vertical-align: middle;
+  }
+
+  @media (min-width: 426px) {
+    padding-top: 5px;
+
+    .personal-infos-container {
+      text-align: left;
+
+      .personal-infos {
+        margin-left: 0px;
+        margin-right: 0px;
+        float: left !important;
+      }
+    }
+
+    .profile-details-container__username {
+      top: 14px;
+    }
+
+    .profile-details-container__main-activity {
+      margin-left: 50px;
+      top: 0px;
+    }
+
+    .profile-details-container__location {
+      margin-left: 50px;
+    }
+
+    .picto-sprite-user-no-legend {
+      float: left;
+    }
+
+    .details-edit-btn {
+      display: inline-block;
+      float: left !important;
+      left: 20px;
+      top: 36px;
+    }
   }
 }
