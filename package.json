@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start": "export NODE_ENV=development; meteor run --settings settings.json",
+    "atom": "atom .; export NODE_ENV=development; meteor run --settings settings.json",
     "deploy": "DEPLOY_HOSTNAME=galaxy.meteor.com meteor deploy dev.mapker.co --settings ./settings.json",
     "deployDev": "DEBUG=* mup deploy",
     "storybook": "start-storybook -p 9001"

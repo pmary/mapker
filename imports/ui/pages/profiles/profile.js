@@ -15,9 +15,14 @@ class Profile extends React.Component {
   }
   render() {
     var name = '';
+    var firstname = '';
+    var lastname = '';
     var alias = '';
     var headline = '';
     var location = '';
+    var coordinate = {};
+    var bboxSouthWest = null;
+    var bboxNorthEast = null;
 
     if (
       this.props.user &&
@@ -25,6 +30,12 @@ class Profile extends React.Component {
     ) {
       if (this.props.user.profile.fullname) {
         name = this.props.user.profile.fullname;
+      }
+      if (this.props.user.profile.firstname) {
+        firstname = this.props.user.profile.firstname;
+      }
+      if (this.props.user.profile.lastname) {
+        lastname = this.props.user.profile.lastname;
       }
       if (this.props.user.profile.username) {
         alias = this.props.user.profile.username;
@@ -37,6 +48,21 @@ class Profile extends React.Component {
         let postcode = this.props.user.profile.location.postcode;
         let region = this.props.user.profile.location.region;
         location = `${postcode} ${region}, ${country}`;
+
+        if (this.props.user.profile.location.coordinate) {
+          coordinate = this.props.user.profile.location.coordinate;
+        }
+
+        if (this.props.user.profile.location.bbox) {
+          bboxSouthWest = [
+            this.props.user.profile.location.bbox[3],
+            this.props.user.profile.location.bbox[2]
+          ];
+          bboxNorthEast = [
+            this.props.user.profile.location.bbox[1],
+            this.props.user.profile.location.bbox[0]
+          ];
+        }
       }
     }
 
@@ -49,9 +75,14 @@ class Profile extends React.Component {
           <ProfileDetails
             type={this.state.type}
             name={name}
+            firstname={firstname}
+            lastname={lastname}
             alias={alias}
             headline={headline}
             location={location}
+            coordinate={coordinate}
+            bboxSouthWest={bboxSouthWest}
+            bboxNorthEast={bboxNorthEast}
           />
         </div>
       </div>
@@ -60,7 +91,8 @@ class Profile extends React.Component {
 }
 
 ProfileCover.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  loading: PropTypes.bool
 }
 
 ProfileCover.defaultProps = {
@@ -76,10 +108,14 @@ ProfileCover.defaultProps = {
  * @see http://guide.meteor.com/react.html#data
  */
 export default createContainer (({ params }) => {
-  const user = Meteor.user();
+  const userHandler = Meteor.subscribe(
+    'users.find',
+    {'profile.username': params.username}
+  );
+  const loading = !userHandler.ready();
 
   return {
-    user
+    user: Meteor.users.findOne({'profile.username': params.username})
   }
 
 }, Profile);

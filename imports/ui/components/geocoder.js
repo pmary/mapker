@@ -167,10 +167,9 @@ function search(endpoint, source, accessToken, proximity, query, callback) {
      // Clear the result list
      this.setState({results: []});
 
-     // If there is a callback function to a parent component
-     if (this.props.onSelect) {
-       this.props.onSelect(place);
-     }
+     // Return the place to the parent component
+     this.props.onSelect(place);
+
      return false;
    }
 
@@ -234,6 +233,7 @@ function search(endpoint, source, accessToken, proximity, query, callback) {
    resultClass: '',
    resultsClass: '',
    resultFocusClass: 'strong',
+   onSelect(){},
    inputPosition: 'top',
    inputPlaceholder: 'Search',
    showLoader: false,

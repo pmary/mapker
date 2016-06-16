@@ -21,94 +21,94 @@ class SignUp extends React.Component{
       passwordRepeat: {value: '', isValid: false, hasError: false,onFocus:false}
     };
   }
-  onFocus(event) {
-    $(event.currentTarget).parent().addClass('on-focus');
+  onFocus(e) {
+    $(e.currentTarget).parent().addClass('on-focus');
   }
-  onBlur(event) {
-    $(event.currentTarget).parent().removeClass('on-focus');
+  onBlur(e) {
+    $(e.currentTarget).parent().removeClass('on-focus');
   }
-  handleFirstnameChange(event) {
+  handleFirstnameChange(e) {
     this.setState({
       firstname:{
-        value: event.target.value,
+        value: e.target.value,
         isValid: formValidation.validateOne({
-          'profile.firstname': event.target.value
+          'profile.firstname': e.target.value
         },'profile.firstname'),
         hasError: !formValidation.validateOne({
-          'profile.firstname': event.target.value
+          'profile.firstname': e.target.value
         },'profile.firstname'),
         onFocus: true
       }
     });
   }
-  handleLastnameChange(event) {
+  handleLastnameChange(e) {
     this.setState({
       lastname:{
-        value: event.target.value,
+        value: e.target.value,
         isValid: formValidation.validateOne({
-          'profile.lastname': event.target.value
+          'profile.lastname': e.target.value
         },'profile.lastname'),
         hasError: !formValidation.validateOne({
-          'profile.lastname': event.target.value
+          'profile.lastname': e.target.value
         },'profile.lastname'),
         onFocus: true
       }
     });
   }
-  handleUsernameChange(event) {
+  handleUsernameChange(e) {
     this.setState({
       username:{
-        value: event.target.value,
+        value: e.target.value,
         isValid: formValidation.validateOne({
-          'profile.username': event.target.value
+          'profile.username': e.target.value
         },'profile.username'),
         hasError: !formValidation.validateOne({
-          'profile.username': event.target.value
+          'profile.username': e.target.value
         },'profile.username'),
         onFocus: true
       }
     });
   }
-  handleEmailChange(event) {
+  handleEmailChange(e) {
     this.setState({
       email:{
-        value: event.target.value,
+        value: e.target.value,
         isValid: formValidation.validateOne({
-          'emails.$.address': event.target.value
+          'emails.$.address': e.target.value
         },'emails.$.address'),
         hasError: !formValidation.validateOne({
-          'emails.$.address': event.target.value
+          'emails.$.address': e.target.value
         },'emails.$.address'),
         onFocus: true
       }
     });
   }
-  handlePasswordChange(event) {
+  handlePasswordChange(e) {
     let passwordRepeat = this.state.passwordRepeat.value;
     this.setState({
       password:{
-        value     : event.target.value,
-        isValid   : event.target.value.match(/^(?=.*\d)[0-9a-zA-Z]{6,}$/),
-        hasError  : !event.target.value.match(/^(?=.*\d)[0-9a-zA-Z]{6,}$/),
+        value     : e.target.value,
+        isValid   : e.target.value.match(/^(?=.*\d)[0-9a-zA-Z]{6,}$/),
+        hasError  : !e.target.value.match(/^(?=.*\d)[0-9a-zA-Z]{6,}$/),
         onFocus   : true
       }
     });
     this.setState({
       passwordRepeat:{
         value     : passwordRepeat,
-        isValid   : passwordRepeat === event.target.value,
-        hasError  : passwordRepeat !== event.target.value,
+        isValid   : passwordRepeat === e.target.value,
+        hasError  : passwordRepeat !== e.target.value,
         onFocus   : false
       }
     });
   }
-  handlePasswordRepeatChange(event) {
+  handlePasswordRepeatChange(e) {
     let password = this.state.password.value;
     this.setState({
       passwordRepeat:{
-        value     : event.target.value,
-        isValid   : event.target.value === password,
-        hasError  : event.target.value !== password,
+        value     : e.target.value,
+        isValid   : e.target.value === password,
+        hasError  : e.target.value !== password,
         onFocus   : true
       }
     });
