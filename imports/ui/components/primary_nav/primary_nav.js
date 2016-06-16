@@ -29,6 +29,26 @@ class PrimaryNav extends React.Component {
             to={{ pathname: '/users/'+this.props.user.profile.username}}
           >
             <NavItem>
+              {
+                (
+                  this.props.user.profile.avatar &&
+                  this.props.user.profile.avatar.url
+                ) && (
+                  <img
+                    src={this.props.user.profile.avatar.url}
+                    alt="avatar"
+                    className="user-avatar"
+                  />
+                )
+              }
+              {
+                (
+                  !this.props.user.profile.avatar ||
+                  !this.props.user.profile.avatar.url
+                ) && (
+                  <span className="user-avatar"></span>
+                )
+              }
               {this.props.user.profile.fullname}
             </NavItem>
           </LinkContainer>
