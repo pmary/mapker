@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { App } from '/imports/ui/layouts/app.js';
 import { AccountsLayout } from '/imports/ui/layouts/account.js';
 import Home from '/imports/ui/pages/home.js';
+import NotFound from '/imports/ui/pages/404.js';
 import SignIn from '/imports/ui/pages/accounts/sign_in.js';
 import SignUp from '/imports/ui/pages/accounts/sign_up.js';
 import ForgotPassword from '/imports/ui/pages/accounts/forgot_password.js';
@@ -27,6 +28,7 @@ Meteor.startup( () => {
         <IndexRoute component={ Home } />
         <Route path="/?signed-up" component={ Home } />
         <Route path="/users/:username" component={ Profile } />
+        <Route path='*' component={NotFound} />
       </Route>
       <Route path="/" component={ AccountsLayout } >
         <Route path="/sign-in" component={ SignIn } />
