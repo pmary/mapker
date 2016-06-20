@@ -28,7 +28,6 @@ Meteor.startup( () => {
         <IndexRoute component={ Home } />
         <Route path="/?signed-up" component={ Home } />
         <Route path="/users/:username" component={ Profile } />
-        <Route path='*' component={NotFound} />
       </Route>
       <Route path="/" component={ AccountsLayout } >
         <Route path="/sign-in" component={ SignIn } />
@@ -41,6 +40,9 @@ Meteor.startup( () => {
       <Route path="/" component={ AdminLayout } >
         <Route path="/admin42" component={ AdminHome } />
         <Route path="/admin42/taxons" component={ AdminTaxons } />
+      </Route>
+      <Route path="/" component={ App } >
+        <Route path='*' component={NotFound} />
       </Route>
     </Router>,
     document.getElementById( 'react-root' )
