@@ -219,5 +219,42 @@ Meteor.methods({
       Meteor.users.update(userId, { $set: set });
       return imageUrl;
     });
+  },
+  /**
+   * @description
+   * Update the user firstname, lastname and locations profile details
+   *
+   * @param {String} firstname
+   * @param {String} lastname
+   * @param {String} headline
+   # @param {Object} place - (Optional) The user place informations
+   */
+  'user.profileDetails.update': function (firstname, lastname, headline, place) {
+    check(firstname, String);
+    check(lastname, String);
+    check(headline, String);
+
+    var userId = Meteor.userId(); if (!userId) { return; }
+
+    console.log('firstname: ', firstname);
+    console.log('lastname: ', lastname);
+    console.log('headline: ', headline);
+    console.log('place: ', place);
+
+    if (place) {
+      // Insert the user location
+      Meteor.call('user.location.update', place);
+    }
+
+    // Update the user firstname, lastname and fullname profile fields
+    let fullname = firstname + ' ' + lastname;
+    Meteor.users.update(userId, {
+      $set: {
+        'profile.fullname': fullname,
+        'profile.firstname': firstname,
+        'profile.lastname': lastname,
+        'profile.headline': headline,
+      }
+    });
   }
 });

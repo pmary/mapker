@@ -49,6 +49,7 @@ Schema.userProfile = new SimpleSchema({
   },
   firstname: {
     type: String,
+    regEx: /^[A-Za-z\u00C0-\u017F-\s]+$/,
     min: 2,
     max: 50,
     optional: true
@@ -66,6 +67,7 @@ Schema.userProfile = new SimpleSchema({
   },
   lastname: {
     type: String,
+    regEx: /^[A-Za-z\u00C0-\u017F-\s]+$/,
     min: 2,
     max: 50,
     optional: true
@@ -78,6 +80,7 @@ Schema.userProfile = new SimpleSchema({
   },
   headline: {
     type: String,
+    min: 2,
     optional: true
   },
   skills: {
@@ -170,3 +173,5 @@ Schema.User = new SimpleSchema({
 });
 
 Meteor.users.attachSchema(Schema.User);
+
+export default Schema;

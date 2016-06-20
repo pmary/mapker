@@ -30,7 +30,8 @@ class ModalComponent extends React.Component {
     // If there is a callback function
     if (this.props.onConfirm) {
       $(this.refs.confirmBtn).button('loading');
-      this.props.onConfirm();
+      // Return the button selector
+      this.props.onConfirm($(this.refs.confirmBtn));
     }
   }
 

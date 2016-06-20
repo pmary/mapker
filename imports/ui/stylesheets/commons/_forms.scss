@@ -1,0 +1,13 @@
+/**
+ * 01 - Input error
+ */
+
+.form-group.error {
+  input {
+    border-color: $errorColor;
+  }
+
+  .message.error {
+    color: $errorColor;
+  }
+}

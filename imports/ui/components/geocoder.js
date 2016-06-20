@@ -47,6 +47,10 @@ function search(endpoint, source, accessToken, proximity, query, callback) {
    updateInputValue(val) {
      this.setState({inputValue: val});
    }
+   // Used by parent, return the current input value
+   getInputValue() {
+     return this.state.inputValue;
+   }
    // Used by parent via the component ref to geocode a text location
    doGeocode(value) {
      console.log('doGeocode');

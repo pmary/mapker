@@ -77,8 +77,8 @@ class Profile extends React.Component {
             name={name}
             firstname={firstname}
             lastname={lastname}
-            alias={alias}
             headline={headline}
+            alias={alias}
             location={location}
             coordinate={coordinate}
             bboxSouthWest={bboxSouthWest}

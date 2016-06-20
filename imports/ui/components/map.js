@@ -37,7 +37,7 @@ class MapComponent extends React.Component {
     map = L.mapbox.map(this.refs.map, this.props.mapid, {
       maxZoom: 17,
       attributionControl: false,
-      zoomControl: false
+      zoomControl: true
     }).setView(this.props.center, 12);
     layerGroup = L.layerGroup().addTo(map);
   }
@@ -61,55 +61,6 @@ class MapComponent extends React.Component {
         this.props.onReverseGeocoding(body.features[0]);
       }
     }
-  }
-
-
-  /**
-   * Add a marker to the map
-   * It can be draggable and have a popup
-   *
-   * @param {Array} coordinate - Like [4.0411151, 48.2662536]
-   * @param {Boolean} draggable
-   * @param {String} popupContent - The text to display into the popup
-   */
-  addMarker(lat, lon, draggable, popupContent) {
-    var marker = L.marker(new L.LatLng(
-      lat,
-      lon
-    ), {
-      icon: L.mapbox.marker.icon({
-        'marker-color': 'f9886c'
-      }),
-      draggable: draggable
-    });
-
-    if (popupContent) {
-      var popupContent = popupContent;
-      marker.bindPopup(popupContent,{
-          closeButton: false,
-      });
-    }
-
-    if (draggable) {
-      marker.on('dragend', (e) => {
-        var marker = e.target;
-        var position = marker.getLatLng();
-        //marker.setLatLng([position],{id:uni,draggable:'true'}).bindPopup(position).update();
-
-        // Do reverse geocoding
-        search(
-          this.props.endpoint,
-          this.props.source,
-          this.props.accessToken,
-          this.props.proximity,
-          position.lng+','+position.lat,
-          this.onResult.bind(this)
-        );
-      });
-    }
-
-    marker.addTo(layerGroup);
-    marker.openPopup();
   }
 
   onSelect(res) {
@@ -197,15 +148,72 @@ class MapComponent extends React.Component {
   }
 
   /**
+   * Clear the map layers
+   */
+  clearLayers() {
+    layerGroup.clearLayers();
+  }
+
+  /**
+   * Add a marker to the map
+   * It can be draggable and have a popup
+   *
+   * @param {Array} coordinate - Like [4.0411151, 48.2662536]
+   * @param {Boolean} draggable
+   * @param {String} popupContent - The text to display into the popup
+   */
+  addMarker(lat, lon, draggable, popupContent) {
+    var marker = L.marker(new L.LatLng(
+      lat,
+      lon
+    ), {
+      icon: L.mapbox.marker.icon({
+        'marker-color': 'f9886c'
+      }),
+      draggable: draggable
+    });
+
+    if (popupContent) {
+      var popupContent = popupContent;
+      marker.bindPopup(popupContent,{
+          closeButton: false,
+      });
+    }
+
+    if (draggable) {
+      marker.on('dragend', (e) => {
+        var marker = e.target;
+        var position = marker.getLatLng();
+        //marker.setLatLng([position],{id:uni,draggable:'true'}).bindPopup(position).update();
+
+        // Do reverse geocoding
+        search(
+          this.props.endpoint,
+          this.props.source,
+          this.props.accessToken,
+          this.props.proximity,
+          position.lng+','+position.lat,
+          this.onResult.bind(this)
+        );
+      });
+    }
+
+    marker.addTo(layerGroup);
+    marker.openPopup();
+  }
+
+  /**
    * Method for the parent to sets a map view that contains the given
    * geographical bounds with the maximum zoom level possible.
    *
-   * @param {Number} southWest
-   * @param {Number} northEast
+   * @param {Number} lat
+   * @param {Number} lon
    * @param {Number} max - The max zoom level
    */
-  fitBounds(southWest, northEast, max = 17) {
-    map.fitBounds([southWest, northEast], { maxZoom: 24 });
+  setView(lat, lon, max = 17) {
+    /*map.fitBounds([southWest, northEast], { maxZoom: 24 });
+    .setView(this.props.center, 12);*/
+    map.setView(new L.LatLng(lat, lon), 17);
   }
 
   render() {

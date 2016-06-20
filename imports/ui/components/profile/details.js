@@ -1,9 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React, { PropTypes } from 'react';
 import Modal from '/imports/ui/components/modal.js';
-//import ProfileDetailsEdition from '/imports/ui/components/profile/details_edition.js';
+import Alert from 'react-s-alert';
 import MapComponent from '/imports/ui/components/map.js';
 import Geocoder from '/imports/ui/components/geocoder.js';
+import Schema from '/imports/api/users/users.js';
+
+// Define a validation context from the users SimpleSchema
+var formValidation = Schema.User.newContext();
 
 class ProfileDetails extends React.Component {
   constructor(props) {
@@ -12,10 +16,25 @@ class ProfileDetails extends React.Component {
     this.state ={
       name: props.name,
       firstname: props.firstname,
+      firstnameState: {isValid: false, hasError: false},
       lastname: props.lastname,
+      lastnameState: {isValid: false, hasError: false},
+      headline: props.headline,
+      headlineState: {isValid: false, hasError: false},
+      confirmedPlace: null
     };
   }
 
+  /**
+   * Component events
+   */
+
+  onFocus(e) {
+    $(e.currentTarget).parent().addClass('on-focus');
+  }
+  onBlur(e) {
+    $(e.currentTarget).parent().removeClass('on-focus');
+  }
   handleClickEditDetails(e) {
     this.refs.detailsEditionModal.show();
     // Re-render the map to be sur that it will fit to the modal size
@@ -25,12 +44,15 @@ class ProfileDetails extends React.Component {
 
       // Set the map view to the given bounding box
       if (this.props.bboxSouthWest && this.props.bboxNorthEast) {
-        this.refs.mapComponent.fitBounds(
-          this.props.bboxSouthWest,
-          this.props.bboxNorthEast,
+        this.refs.mapComponent.setView(
+          this.props.coordinate.lat,
+          this.props.coordinate.lon,
           17
         );
       }
+
+      // Clear the map layers
+      this.refs.mapComponent.clearLayers();
 
       // Add the marker to the coordinate
       this.refs.mapComponent.addMarker(
@@ -50,6 +72,7 @@ class ProfileDetails extends React.Component {
       name: nextProps.name,
       firstname: nextProps.firstname,
       lastname: nextProps.lastname,
+      headline: nextProps.headline
     });
   }
 
@@ -58,17 +81,65 @@ class ProfileDetails extends React.Component {
   }
   onChangeFirstname(e) {
     this.setState({firstname: e.target.value});
+    this.setState({firstnameState: {
+      isValid: formValidation.validateOne({
+        'profile.firstname': e.target.value
+      },'profile.firstname'),
+      hasError: !formValidation.validateOne({
+        'profile.firstname': e.target.value
+      },'profile.firstname')
+    }});
   }
   onChangeLastname(e) {
     this.setState({lastname: e.target.value});
+    this.setState({lastnameState: {
+      isValid: formValidation.validateOne({
+        'profile.lastname': e.target.value
+      },'profile.lastname'),
+      hasError: !formValidation.validateOne({
+        'profile.lastname': e.target.value
+      },'profile.lastname')
+    }});
+  }
+  onChangeHeadline(e) {
+    this.setState({headline: e.target.value});
+    this.setState({headlineState: {
+      isValid: formValidation.validateOne({
+        'profile.headline': e.target.value
+      },'profile.headline'),
+      hasError: !formValidation.validateOne({
+        'profile.headline': e.target.value
+      },'profile.headline')
+    }});
   }
 
   /**
    * Edit details modal methods
    */
   // On modal confirm
-  modalEditDetailsOnConfirm() {
-
+  modalEditDetailsOnConfirm(btnPointer) {
+    Meteor.call(
+      'user.profileDetails.update',
+      this.state.firstname,
+      this.state.lastname,
+      this.state.headline,
+      this.state.confirmedPlace,
+      (err, res) => {
+        btnPointer.button('reset');
+        if (err) {
+          Alert.warning(`Incomplete address. \n
+            The address must contain at least a
+            country, a region and a postcode`, {
+            position: 'top-right',
+            effect: 'jelly'
+          });
+        }
+        else {
+          // Close the modal and reset the confirm btn
+          this.refs.detailsEditionModal.hide();
+        }
+      }
+    );
   }
 
   /**
@@ -77,16 +148,20 @@ class ProfileDetails extends React.Component {
   // Called by the MapComponent when a revese geocoding request is a success
   mapReverseGeocoding(place) {
     // Pass the place to the geocoder param
-    //this.refs.modalGeocoder.updateInputValue(place.place_name);
+    this.refs.modalGeocoder.updateInputValue(place.place_name);
     // Set the confirmedPlace
-    //this.setState({confirmedPlace: place});
+    this.setState({confirmedPlace: place});
   }
 
   /**
    * Geocoder methods
    */
-  modalGeocoderSelect() {
-
+  modalGeocoderSelect(place) {
+    this.setState({confirmedPlace: place});
+    // Update the geocoder component input value
+    this.refs.modalGeocoder.updateInputValue(place.place_name);
+    // Pass the coordinates to the map component
+    this.refs.mapComponent.onSelect(place);
   }
   geocoderSuggest() {
 
@@ -153,10 +228,18 @@ class ProfileDetails extends React.Component {
           ref="detailsEditionModal"
           title="Edit your details"
         >
-          <form onSubmit={function (e) { e.preventDefault(); }}>
+          <form
+            onSubmit={function (e) { e.preventDefault(); }}
+            autocomplete="off"
+          >
             {
               this.props.type === 'user' &&
-              (<div className="form-group">
+              (<div className={
+                "form-group" +
+                (this.state.firstnameState.isValid ? ' valid' : '') +
+                (this.state.firstnameState.hasError ? ' error' : '') +
+                (this.state.firstnameState.onFocus ? ' on-focus' : '')
+               }>
                 <label for="details-input-firstname">Firstname</label>
                 <input
                   type="text"
@@ -165,12 +248,25 @@ class ProfileDetails extends React.Component {
                   placeholder="John"
                   value={this.state.firstname}
                   onChange={this.onChangeFirstname.bind(this)}
+                  onFocus={ this.onFocus }
+                  onBlur={ this.onBlur }
                 />
+                <p className="message error">
+                  {
+                    this.state.firstnameState.hasError ?
+                    'Must contain at least 2 characters and no digit' : null
+                  }
+                </p>
               </div>)
             }
             {
               this.props.type === 'user' &&
-              (<div className="form-group">
+              (<div className={
+                "form-group" +
+                (this.state.lastnameState.isValid ? ' valid' : '') +
+                (this.state.lastnameState.hasError ? ' error' : '') +
+                (this.state.lastnameState.onFocus ? ' on-focus' : '')
+               }>
                 <label for="details-input-lastname">Lastname</label>
                 <input
                   type="text"
@@ -179,7 +275,42 @@ class ProfileDetails extends React.Component {
                   placeholder="Doe"
                   value={this.state.lastname}
                   onChange={this.onChangeLastname.bind(this)}
+                  onFocus={ this.onFocus }
+                  onBlur={ this.onBlur }
                 />
+                <p className="message error">
+                  {
+                    this.state.lastnameState.hasError ?
+                    'Must contain at least 2 characters and no digit' : null
+                  }
+                </p>
+              </div>)
+            }
+            {
+              this.props.type === 'user' &&
+              (<div className={
+                "form-group" +
+                (this.state.headlineState.isValid ? ' valid' : '') +
+                (this.state.headlineState.hasError ? ' error' : '') +
+                (this.state.headlineState.onFocus ? ' on-focus' : '')
+               }>
+                <label for="details-input-headline">Professional headline</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="details-input-headline"
+                  placeholder="Ex: Fab Manager"
+                  value={this.state.headline}
+                  onChange={this.onChangeHeadline.bind(this)}
+                  onFocus={ this.onFocus }
+                  onBlur={ this.onBlur }
+                />
+                <p className="message error">
+                  {
+                    this.state.headlineState.hasError ?
+                    'Must contain at least 2 characters' : null
+                  }
+                </p>
               </div>)
             }
             {
@@ -234,8 +365,8 @@ ProfileDetails.propTypes = {
   name: PropTypes.string.isRequired,
   firstname: PropTypes.string, // Only for 'user' type
   lastname: PropTypes.string, // Only for 'user' type
+  headline: PropTypes.string, // Only for 'user' type
   alias: PropTypes.string.isRequired,
-  headline: PropTypes.string.isRequired,
   location: PropTypes.string.isRequired,
   coordinate: PropTypes.object.isRequired,
   bboxSouthWest: PropTypes.array,
@@ -248,7 +379,8 @@ ProfileDetails.defaultProps = {
   bboxNorthEast: null,
   name: '',
   firstname: '',
-  lastname: ''
+  lastname: '',
+  headline: ''
 }
 
 export default ProfileDetails;
