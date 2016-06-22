@@ -77,13 +77,8 @@ class ProfileCover extends React.Component {
     let className = "cover-container " + this.props.type;
     var style = {};
     // If the user has a cover
-    if (
-      this.props.user &&
-      this.props.user.profile &&
-      this.props.user.profile.cover &&
-      this.props.user.profile.cover.url
-    ) {
-      style = {backgroundImage: `url(${this.props.user.profile.cover.url})`};
+    if (this.props.coverUrl) {
+      style = {backgroundImage: `url(${this.props.coverUrl})`};
       className += ' has-cover'
     }
     else { className += ' no-cover'; }
@@ -128,12 +123,12 @@ class ProfileCover extends React.Component {
 }
 
 ProfileCover.propTypes = {
-  type: PropTypes.oneOf(['user', 'place']),
-  user: PropTypes.object
+  type: PropTypes.oneOf(['user', 'place']).isRequired,
+  coverUrl: PropTypes.string
 }
 
 ProfileCover.defaultProps = {
-  type: null
+  coverUrl: null
 }
 
 /**
@@ -143,11 +138,12 @@ ProfileCover.defaultProps = {
  *
  * @see http://guide.meteor.com/react.html#data
  */
-export default createContainer (({ params }) => {
+/*export default createContainer (({ params }) => {
   const user = Meteor.user();
 
   return {
     user
   }
 
-}, ProfileCover);
+}, ProfileCover);*/
+export default ProfileCover;

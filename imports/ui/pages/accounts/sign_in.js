@@ -21,7 +21,7 @@ class SignIn extends React.Component {
     // If there is a user
     if (user) {
       // Redirect the user to his profile
-      browserHistory.push('/users/' + user.profile.username);
+      browserHistory.push('/profile/user/' + user.profile.username);
     }
   }
   onFocus(event) {
@@ -80,7 +80,7 @@ class SignIn extends React.Component {
         else {
           var user = Meteor.user();
           // Redirect the user to his profile
-          browserHistory.push('/users/' + user.profile.username);
+          browserHistory.push('/profile/user/' + user.profile.username);
         }
       });
     }

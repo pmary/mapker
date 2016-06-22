@@ -8,5 +8,5 @@ import { Meteor } from 'meteor/meteor';
  * @param {Object} options
  */
 Meteor.publish('users.find', function (query = {}, options = {}) {
-  return Taxons.find(query, options);
+  return Meteor.users.find(query, options);
 });

@@ -77,13 +77,8 @@ class ProfileAvatar extends React.Component {
     let className = "avatar-container " + this.props.type;
     var style = {};
     // If the user has a cover
-    if (
-      this.props.user &&
-      this.props.user.profile &&
-      this.props.user.profile.avatar &&
-      this.props.user.profile.avatar.url
-    ) {
-      style = {backgroundImage: `url(${this.props.user.profile.avatar.url})`};
+    if (this.props.avatarUrl) {
+      style = {backgroundImage: `url(${this.props.avatarUrl})`};
       className += ' has-avatar'
     }
     else { className += ' no-avatar'; }
@@ -126,12 +121,12 @@ class ProfileAvatar extends React.Component {
 }
 
 ProfileAvatar.propTypes = {
-  type: PropTypes.oneOf(['user', 'place']),
-  user: PropTypes.object
+  type: PropTypes.oneOf(['user', 'place']).isRequired,
+  avatarUrl: PropTypes.string
 }
 
 ProfileAvatar.defaultProps = {
-  type: null
+  avatarUrl: null
 }
 
 /**
@@ -141,11 +136,12 @@ ProfileAvatar.defaultProps = {
  *
  * @see http://guide.meteor.com/react.html#data
  */
-export default createContainer (({ params }) => {
+/*export default createContainer (({ params }) => {
   const user = Meteor.user();
 
   return {
     user
   }
 
-}, ProfileAvatar);
+}, ProfileAvatar);*/
+export default ProfileAvatar;

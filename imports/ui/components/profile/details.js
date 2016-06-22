@@ -374,7 +374,6 @@ ProfileDetails.propTypes = {
 }
 
 ProfileDetails.defaultProps = {
-  type: null,
   bboxSouthWest: null,
   bboxNorthEast: null,
   name: '',

@@ -236,11 +236,6 @@ Meteor.methods({
 
     var userId = Meteor.userId(); if (!userId) { return; }
 
-    console.log('firstname: ', firstname);
-    console.log('lastname: ', lastname);
-    console.log('headline: ', headline);
-    console.log('place: ', place);
-
     if (place) {
       // Insert the user location
       Meteor.call('user.location.update', place);

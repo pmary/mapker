@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
 import ProfileCover from '/imports/ui/components/profile/cover.js';
 import ProfileAvatar from '/imports/ui/components/profile/avatar.js';
@@ -8,8 +9,14 @@ import ProfileDetails from '/imports/ui/components/profile/details.js';
 class Profile extends React.Component {
   constructor(props) {
     super(props);
+
+    let authProfiles = ['user', 'place'];
+    if (authProfiles.indexOf(props.params.type) == -1) {
+      // Redirect the user to the 404 page
+      browserHistory.push('/404');
+    }
+
     this.state = {
-      type: 'user',
       name: ''
     }
   }
@@ -19,6 +26,8 @@ class Profile extends React.Component {
     var lastname = '';
     var alias = '';
     var headline = '';
+    var coverUrl = null;
+    var avatarUrl = null;
     var location = '';
     var coordinate = {};
     var bboxSouthWest = null;
@@ -42,6 +51,12 @@ class Profile extends React.Component {
       }
       if (this.props.user.profile.headline) {
         headline = this.props.user.profile.headline;
+      }
+      if (this.props.user.profile.cover && this.props.user.profile.cover.url) {
+        coverUrl = this.props.user.profile.cover.url;
+      }
+      if (this.props.user.profile.avatar && this.props.user.profile.avatar.url){
+        avatarUrl = this.props.user.profile.avatar.url;
       }
       if (this.props.user.profile.location) {
         let country = this.props.user.profile.location.country;
@@ -69,11 +84,11 @@ class Profile extends React.Component {
     return (
       <div className="profile-page">
         <div className="">
-          <ProfileCover type={this.state.type} >
-            <ProfileAvatar type={this.state.type} />
+          <ProfileCover type={this.props.params.type} coverUrl={coverUrl}>
+            <ProfileAvatar type={this.props.params.type} avatarUrl={avatarUrl}/>
           </ProfileCover>
           <ProfileDetails
-            type={this.state.type}
+            type={this.props.params.type}
             name={name}
             firstname={firstname}
             lastname={lastname}
@@ -96,7 +111,6 @@ ProfileCover.propTypes = {
 }
 
 ProfileCover.defaultProps = {
-  type: null,
   user: null
 }
 
