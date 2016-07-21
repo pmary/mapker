@@ -251,5 +251,29 @@ Meteor.methods({
         'profile.headline': headline,
       }
     });
+  },
+  /**
+   * @description
+   * Update the user social links of the user profile
+   *
+   * @param {Object} links
+   * @param {String} links.facebook
+   * @param {String} links.twitter
+   * @param {String} links.flickr
+   * @param {String} links.github
+   * @param {String} links.website
+   */
+  'user.profileSocial.update': function (links) {
+    check(links, {
+      facebook: String,
+      twitter: String,
+      flickr: String,
+      github: String,
+      website: String
+    });
+
+    var userId = Meteor.userId(); if (!userId) { return; }
+
+    Meteor.users.update(userId, { $set: { 'profile.social': links } });
   }
 });

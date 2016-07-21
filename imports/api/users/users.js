@@ -19,6 +19,20 @@ var imageSchema = new SimpleSchema({
   }
 });
 
+var socialSchema = new SimpleSchema({
+  facebook  : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  flickr    : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  twitter   : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  website   : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  linkedin  : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  github    : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  tumblr    : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  instagram : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  behance   : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  pinterest : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true },
+  vimeo     : { type: String, regEx: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/, optional: true }
+});
+
 Schema.userProfile = new SimpleSchema({
   activated: {
     type: Boolean,
@@ -135,6 +149,10 @@ Schema.userProfile = new SimpleSchema({
   "location.bbox.$": {
     type: Number,
     decimal: true
+  },
+  social: {
+    type: socialSchema,
+    optional: true
   }
 });
 

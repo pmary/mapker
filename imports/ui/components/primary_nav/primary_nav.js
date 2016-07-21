@@ -26,7 +26,7 @@ class PrimaryNav extends React.Component {
       pullRight= (
         <Nav pullRight>
           <LinkContainer
-            to={{ pathname: '/users/'+this.props.user.profile.username}}
+            to={{ pathname: '/profile/user/'+this.props.user.profile.username}}
           >
             <NavItem>
               {

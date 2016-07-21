@@ -4,35 +4,37 @@ class ModalComponent extends React.Component {
   constructor(props) {
     super(props);
   }
-
-  show () {
-    $('#'+this.props.id).modal('show');
-  }
-
-  hide () {
-    $('#'+this.props.id).modal('hide');
-  }
-
   componentDidMount() {
     $(this.refs.modal).on('hidden.bs.modal', () => {
       this.onClose();
     });
   }
 
-  onClose() {
-    if (this.props.onClose) {
-      this.props.onClose();
-      $(this.refs.confirmBtn).button('reset');
-    }
+  /**
+   * Methods
+   */
+  // Method to show the modal
+  show () {
+    $('#'+this.props.id).modal('show');
+  }
+  // Method to hide the modal
+  hide () {
+    $('#'+this.props.id).modal('hide');
   }
 
+  /**
+   * Events
+   */
+  // On modal close event
+  onClose() {
+    this.props.onClose();
+    $(this.refs.confirmBtn).button('reset');
+  }
+  // On modal confirm event
   onConfirm() {
-    // If there is a callback function
-    if (this.props.onConfirm) {
-      $(this.refs.confirmBtn).button('loading');
-      // Return the button selector
-      this.props.onConfirm($(this.refs.confirmBtn));
-    }
+    $(this.refs.confirmBtn).button('loading');
+    // Return the button selector
+    this.props.onConfirm($(this.refs.confirmBtn));
   }
 
   render() {
@@ -54,7 +56,7 @@ class ModalComponent extends React.Component {
         tabindex="-1"
         role="dialog"
       >
-        <div className="modal-dialog">
+        <div className={this.props.size + " modal-dialog"}>
           <div className="modal-content">
             <div className="modal-header">
               <button
@@ -110,25 +112,20 @@ class ModalComponent extends React.Component {
 }
 
 ModalComponent.propTypes = {
+  onConfirm: PropTypes.func,
+  onClose: PropTypes.func,
   id: PropTypes.string.isRequired,
   title: PropTypes.string,
-  showConfirmBtn: PropTypes.bool
-  /*body: PropTypes.string,
-  offset: PropTypes.number,
-  stack: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
-  effect: PropTypes.string,
-  beep: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
-  timeout: PropTypes.oneOfType([PropTypes.oneOf(['none']), PropTypes.number]),
-  html: PropTypes.bool,
-  onClose: PropTypes.func,
-  onShow: PropTypes.func,
-  customFields: PropTypes.object,
-  contentTemplate: PropTypes.func*/
+  showConfirmBtn: PropTypes.bool,
+  size: PropTypes.string
 };
 
 ModalComponent.defaultProps = {
+  onConfirm(){},
+  onClose(){},
   title: '',
-  showConfirmBtn: true
+  showConfirmBtn: true,
+  size: ''
 };
 
 export default ModalComponent;

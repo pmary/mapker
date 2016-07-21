@@ -21,7 +21,12 @@ class ProfileDetails extends React.Component {
       lastnameState: {isValid: false, hasError: false},
       headline: props.headline,
       headlineState: {isValid: false, hasError: false},
-      confirmedPlace: null
+      confirmedPlace: null,
+      /*facebook: '',
+      twitter: '',
+      flickr: '',
+      github: '',
+      website: ''*/
     };
   }
 
@@ -35,6 +40,9 @@ class ProfileDetails extends React.Component {
   onBlur(e) {
     $(e.currentTarget).parent().removeClass('on-focus');
   }
+  /*handleClickEditSocial(e) {
+    this.refs.socialEditionModal.show();
+  }*/
   handleClickEditDetails(e) {
     this.refs.detailsEditionModal.show();
     // Re-render the map to be sur that it will fit to the modal size
@@ -114,6 +122,47 @@ class ProfileDetails extends React.Component {
   }
 
   /**
+   * Edit social links modal methods
+   */
+  // On modal confirm
+  /*modalEditSocialOnConfirm(btnPointer) {
+    console.log('confirm');
+    // Reset the confirm btn
+    btnPointer.button('reset');
+    let links = {
+      facebook: this.state.facebook,
+      twitter: this.state.twitter,
+      flickr: this.state.flickr,
+      github: this.state.github,
+      website: this.state.website
+    }
+    Meteor.call('user.profileSocial.update', links, (err) => {
+      if (err) {
+        console.log('err: ', err);
+      }
+      else {
+        // Close the modal
+        this.refs.socialEditionModal.hide();
+      }
+    });
+  }
+  modalEditSocialOnAdd() {
+    let service = this.refs.socialEditionModal_select.value;
+    console.log('service: ', service);
+  }
+  // On social profile link change
+  onSocialChange(service, value) {
+    var obj = {};
+    obj[service] = value;
+    this.setState(obj);
+  }
+  clearSocialInput(service) {
+    var obj = {};
+    obj[service] = '';
+    this.setState(obj);
+  }*/
+
+  /**
    * Edit details modal methods
    */
   // On modal confirm
@@ -169,7 +218,7 @@ class ProfileDetails extends React.Component {
 
   render() {
     return (
-      <div className="col-xs-12 profile-details-container">
+      <div className="col-xs-12 profileDetails">
         <div
           className="
           col-xs-12
@@ -181,17 +230,17 @@ class ProfileDetails extends React.Component {
           <div className="pull-left personal-infos">
             <div>
               <span className={`picto-sprite-${this.props.type}-no-legend`}></span>
-              <span className="profile-details-container__username">
+              <span className="profileDetails__username">
                 {this.props.name}
-                <span className="profile-details-container__alias">
+                <span className="profileDetails__alias">
                   @{this.props.alias}
                 </span>
               </span>
             </div>
-            <span className="profile-details-container__main-activity">
+            <span className="profileDetails__main-activity">
               {this.props.headline}
             </span>
-            <span className="profile-details-container__location">
+            <span className="profileDetails__location">
               {this.props.location}
             </span>
           </div>
@@ -203,12 +252,15 @@ class ProfileDetails extends React.Component {
             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
           </div>
 
-          <div className="pull-right social-links-container">
+          {/*<div className="pull-right social-links-container">
             <a href="#" target="_blank" className="social-icon social-icon-30-facebook">
               <span>Facebook</span>
             </a>
             <a href="#" target="_blank" className="social-icon social-icon-30-twitter">
               <span>Twitter</span>
+            </a>
+            <a href="#" target="_blank" className="social-icon social-icon-30-github">
+              <span>GitHub</span>
             </a>
             <a href="#" target="_blank" className="social-icon social-icon-30-flickr">
               <span>Flickr</span>
@@ -217,7 +269,186 @@ class ProfileDetails extends React.Component {
               Personal website</span>
             </a>
           </div>
+
+          <div
+            className="details-social-links-edit-btn"
+            onClick={this.handleClickEditSocial.bind(this)}
+          >
+            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </div>*/}
         </div>
+
+        {/*<Modal
+          className="profileDetails__socialModal"
+          id={"profileDetails__socialModal"}
+          btnConfirmText="Save"
+          btnCancelText="Cancel"
+          onConfirm={this.modalEditSocialOnConfirm.bind(this)}
+          ref="socialEditionModal"
+          size="modal-sm"
+          title="Edit your social profiles"
+        >
+          <form
+            onSubmit={function (e) { e.preventDefault(); }}
+            autocomplete="off"
+            className="form-inline"
+
+            <div className="form-group profileDetails__socialModal__formGroup">
+              <label
+                htmlFor="facebook-input"
+                className="profileDetails__socialModal__label"
+              >
+                <span className="
+                  social-icon
+                  social-icon-30-facebook
+                  profileDetails__socialModal__icon"
+                >
+                  <span>Facebook</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                className="form-control profileDetails__socialModal__input"
+                id="facebook-input"
+                placeholder="http://facebook.com/..."
+                value={this.state.facebook}
+                onChange={(e)=>{this.onSocialChange('facebook', e.target.value)}}
+              />
+              <span
+                className="
+                glyphicon
+                glyphicon-remove
+                profileDetails__socialModal__removeBtn"
+                aria-hidden="true"
+                onClick={(e)=>{this.clearSocialInput('facebook', e.target.value)}}>
+              </span>
+            </div>
+
+            <div className="form-group profileDetails__socialModal__formGroup">
+              <label
+                htmlFor="twitter-input"
+                className="profileDetails__socialModal__label"
+              >
+                <span className="
+                  social-icon
+                  social-icon-30-twitter
+                  profileDetails__socialModal__icon"
+                >
+                  <span>Twitter</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                className="form-control profileDetails__socialModal__input"
+                id="twitter-input"
+                placeholder="http://twitter.com/..."
+                value={this.state.twitter}
+                onChange={(e)=>{this.onSocialChange('twitter', e.target.value)}}
+              />
+              <span
+                className="
+                glyphicon
+                glyphicon-remove
+                profileDetails__socialModal__removeBtn"
+                aria-hidden="true"
+                onClick={(e)=>{this.clearSocialInput('twitter', e.target.value)}}>
+              </span>
+            </div>
+
+            <div className="form-group profileDetails__socialModal__formGroup">
+              <label
+                htmlFor="flickr-input"
+                className="profileDetails__socialModal__label"
+              >
+                <span className="
+                  social-icon
+                  social-icon-30-flickr
+                  profileDetails__socialModal__icon"
+                >
+                  <span>Flickr</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                className="form-control profileDetails__socialModal__input"
+                id="flickr-input"
+                placeholder="http://flickr.com/..."
+                value={this.state.flickr}
+                onChange={(e)=>{this.onSocialChange('flickr', e.target.value)}}
+              />
+              <span
+                className="
+                glyphicon
+                glyphicon-remove
+                profileDetails__socialModal__removeBtn"
+                aria-hidden="true"
+                onClick={(e)=>{this.clearSocialInput('flickr')}}>
+              </span>
+            </div>
+
+            <div className="form-group profileDetails__socialModal__formGroup">
+              <label
+                htmlFor="github-input"
+                className="profileDetails__socialModal__label"
+              >
+                <span className="
+                  social-icon
+                  social-icon-30-github
+                  profileDetails__socialModal__icon"
+                >
+                  <span>GitHub</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                className="form-control profileDetails__socialModal__input"
+                id="github-input"
+                placeholder="http://github.com/..."
+                value={this.state.github}
+                onChange={(e)=>{this.onSocialChange('github', e.target.value)}}
+              />
+              <span
+                className="
+                glyphicon
+                glyphicon-remove
+                profileDetails__socialModal__removeBtn"
+                aria-hidden="true"
+                onClick={(e)=>{this.clearSocialInput('github', e.target.value)}}>
+              </span>
+            </div>
+
+            <div className="form-group profileDetails__socialModal__formGroup">
+              <label
+                htmlFor="website-input"
+                className="profileDetails__socialModal__label"
+              >
+                <span className="
+                  social-icon
+                  social-icon-30-website
+                  profileDetails__socialModal__icon"
+                >
+                  <span>Personal website</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                className="form-control profileDetails__socialModal__input"
+                id="website-input"
+                placeholder="http://mywebsite.com"
+                value={this.state.website}
+                onChange={(e)=>{this.onSocialChange('website', e.target.value)}}
+              />
+              <span
+                className="
+                glyphicon
+                glyphicon-remove
+                profileDetails__socialModal__removeBtn"
+                aria-hidden="true"
+                onClick={(e)=>{this.clearSocialInput('website', e.target.value)}}>
+              </span>
+            </div>
+          </form>
+        </Modal>*/}
 
         <Modal
           className="profile-details-edition-modal"
