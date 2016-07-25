@@ -1,0 +1,58 @@
+.profilePage {
+
+  @media (min-width: 426px) {
+    margin-top: 64px;
+  }
+
+  &__details {
+    background-color: #fff;
+    border-bottom: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+    padding-bottom: 10px;
+    padding-top: 50px;
+
+    @media (min-width: 426px) {
+      padding-top: 5px;
+    }
+  }
+
+  &__content {
+    margin-top: 15px;
+
+    &__leftBarContainer {
+      padding-left: 0px;
+      padding-right: 10px;
+    }
+    &__leftBar {
+      background-color: #fff;
+      border: 1px solid;
+      border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+      border-radius: 3px;
+      padding: 15px;
+      &__bio {
+        direction: ltr;
+        font-size: 14px;
+        font-weight: 300;
+        margin-bottom: 0px;
+      }
+    }
+
+    &__right {
+      &__menu {
+        background-color: #fff;
+        border: 1px solid;
+        border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+        border-radius: 5px;
+      }
+
+      &__flux {
+        background-color: #fff;
+        border: 1px solid;
+        border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+        border-radius: 3px;
+        margin-top: 15px;
+        padding: 15px;
+      }
+    }
+  }
+}

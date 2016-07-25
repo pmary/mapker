@@ -218,14 +218,9 @@ class ProfileDetails extends React.Component {
 
   render() {
     return (
-      <div className="col-xs-12 profileDetails">
+      <div className="profileDetails">
         <div
-          className="
-          col-xs-12
-          col-sm-12
-          col-md-8 col-md-offset-2
-          col-lg-8 col-lg-offset-2
-          personal-infos-container"
+          className="personal-infos-container"
         >
           <div className="pull-left personal-infos">
             <div>

@@ -5,6 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import ProfileCover from '/imports/ui/components/profile/cover.js';
 import ProfileAvatar from '/imports/ui/components/profile/avatar.js';
 import ProfileDetails from '/imports/ui/components/profile/details.js';
+import ProfileActivities from '/imports/ui/components/profile/activities.js';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -82,23 +83,83 @@ class Profile extends React.Component {
     }
 
     return (
-      <div className="profile-page">
-        <div className="">
+      <div className="profilePage container-fluid">
+        <div className="row">
           <ProfileCover type={this.props.params.type} coverUrl={coverUrl}>
             <ProfileAvatar type={this.props.params.type} avatarUrl={avatarUrl}/>
           </ProfileCover>
-          <ProfileDetails
-            type={this.props.params.type}
-            name={name}
-            firstname={firstname}
-            lastname={lastname}
-            headline={headline}
-            alias={alias}
-            location={location}
-            coordinate={coordinate}
-            bboxSouthWest={bboxSouthWest}
-            bboxNorthEast={bboxNorthEast}
-          />
+        </div>
+
+        <div className="profilePage__details row">
+          <div className="
+          col-xs-12
+          col-sm-12
+          col-md-10 col-md-offset-1
+          col-lg-10 col-lg-offset-1">
+            <ProfileDetails
+              type={this.props.params.type}
+              name={name}
+              firstname={firstname}
+              lastname={lastname}
+              headline={headline}
+              alias={alias}
+              location={location}
+              coordinate={coordinate}
+              bboxSouthWest={bboxSouthWest}
+              bboxNorthEast={bboxNorthEast}
+            />
+          </div>
+        </div>
+
+        <div className="row">
+          <div
+            className="
+              profilePage__content
+              col-xs-12
+              col-sm-12
+              col-md-10 col-md-offset-1
+              col-lg-10 col-lg-offset-1"
+          >
+            <div className="row">
+              <div className="
+                profilePage__content__leftBarContainer
+                col-xs-12
+                col-sm-12
+                col-md-4
+                col-lg-4"
+              >
+                <div className="profilePage__content__leftBar">
+                  <p className="profilePage__content__leftBar__bio">
+                    Fullstack developer, who love complexity and forge tools
+                    powerfull enough to manage it. Co-founder of
+                     <a href="http://Mapker.co">Mapker.co</a>  & fullstack
+                    @PrestaShop
+                  </p>
+                </div>
+              </div>
+
+              <div className="
+                profilePage__content__right
+                col-xs-12
+                col-sm-12
+                col-md-8
+                col-lg-8"
+              >
+                <ul className="profilePage__content__right__menu nav nav-pills">
+                  <li role="presentation" className="active"><a href="#">Activity</a></li>
+                  <li role="presentation"><a href="#">Places</a></li>
+                  <li role="presentation"><a href="#">Projects</a></li>
+                  <li role="presentation"><a href="#">Communities</a></li>
+                  <li role="presentation"><a href="#">Events</a></li>
+                </ul>
+
+                <div className="profilePage__content__right__flux">
+                  <ProfileActivities />
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )

@@ -5,7 +5,6 @@ import { aws } from '/imports/api/aws/server/methods';
 
 Meteor.methods({
   /**
-   * @description
    * Activate the user profile by providing the at least 3 skills,
    * a professional headline and a place
    *
@@ -40,7 +39,6 @@ Meteor.methods({
     } });
   },
   /**
-   * @description
    * Update the user location
    *
    * @param {Object} place - A place object from Mapbox geocoding
@@ -116,7 +114,6 @@ Meteor.methods({
     }
   },
   /**
-   * @description
    * Add skills to a user profile
    *
    * @param {Array} skillIds - The ids of existing skills
@@ -172,7 +169,6 @@ Meteor.methods({
     });
   },
   /**
-   * @description
    * Get a blob image object, upload it to the aws bucket and update the user
    * profile accordingly
    *
@@ -221,7 +217,6 @@ Meteor.methods({
     });
   },
   /**
-   * @description
    * Update the user firstname, lastname and locations profile details
    *
    * @param {String} firstname
@@ -253,7 +248,6 @@ Meteor.methods({
     });
   },
   /**
-   * @description
    * Update the user social links of the user profile
    *
    * @param {Object} links
