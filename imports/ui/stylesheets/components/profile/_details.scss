@@ -2,8 +2,23 @@
  * Edition modal
  */
 .profileDetails {
+  display: inline-block;
+  width: 100%;
+
+  &__right {
+    position: relative;
+    @media (min-width: 426px) {
+      top: 29px;
+    }
+  }
+
+  &__followBtn {
+
+  }
+
   .personal-infos-container {
     text-align: center;
+    width: 100%;
 
     .personal-infos {
       position: relative;

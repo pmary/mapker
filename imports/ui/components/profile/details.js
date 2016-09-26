@@ -247,6 +247,13 @@ class ProfileDetails extends React.Component {
             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
           </div>
 
+          {/* Social interaction */}
+          <div className="pull-right profileDetails__right">
+            <button className="profileDetails__followBtn btn btn-default">
+              Follow
+            </button>
+          </div>
+
           {/*<div className="pull-right social-links-container">
             <a href="#" target="_blank" className="social-icon social-icon-30-facebook">
               <span>Facebook</span>
