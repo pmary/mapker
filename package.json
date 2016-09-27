@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.3.18",
+    "bcrypt": "^0.8.7",
     "bootstrap": "^3.3.6",
     "cropperjs": "^0.7.1",
     "elasticsearch": "^11.0.1",

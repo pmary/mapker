@@ -73,8 +73,8 @@ class SignIn extends React.Component {
         if (err) {
           console.log('Err: ', err);
           Alert.error(err.reason, {
-            position: 'top',
-            timeout: 5000
+            position: 'top-right',
+            effect: 'jelly'
           });
         }
         else {
